@@ -1,0 +1,8 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@host = localhost
+@port = 7281
+@baseUrl = https://{{host}}:{{port}}
+
+### Search Artist
+GET {{baseUrl}}/artist?query=Clairo&limit=15
+Accept: application/json

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "XmlParsing": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\Luke\\source\\repos\\MediaBoard\\XmlParsing"
+    }
+  }
+}

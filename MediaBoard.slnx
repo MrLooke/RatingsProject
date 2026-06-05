@@ -1,0 +1,13 @@
+<Solution>
+  <Project Path="DataImportToPostgres/DataImportToPostgres.csproj" Id="66b9ec78-136f-46d5-9abf-ed8abd77714a">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
+  <Project Path="mediaboard.client/mediaboard.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="MediaBoard.Server/MediaBoard.Server.csproj" />
+  <Project Path="XmlParsing/XmlParsing.csproj">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
+</Solution>

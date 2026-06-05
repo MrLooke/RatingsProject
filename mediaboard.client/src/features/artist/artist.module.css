@@ -1,0 +1,132 @@
+.artistBody {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 30px repeat(9, 1fr) 30px;
+    grid-template-rows: repeat(24, 50px);
+    row-gap: 10px;
+}
+
+img {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    grid-row: 2;
+    grid-column: 10;
+    border-radius: 12px;
+}
+
+.ratings {
+    grid-column: 10/11;
+    grid-row: 7/11;
+}
+
+.artistName {
+    font-size: 5rem;
+    /* font-size: clamp(1rem, 8vw, 5rem); */
+
+    grid-column: 2/9;
+    grid-row: 2/4;
+    text-align: left;
+    line-height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.description {
+    grid-column: 2/9;
+    grid-row: 4/8;
+    text-align: left;
+}
+
+.albums {
+    grid-column: 2/9;
+    grid-row: 8;
+    grid-auto-rows: auto;
+}
+
+.albumCard {
+    height: 200px;
+    margin-bottom: 15px;
+    padding: 5px 15px;
+    position: relative;
+    border: 0;
+    display: flex;
+    align-items: center;
+
+    img {
+        width: 175px;
+        height: 175px;
+    }
+
+    .info {
+        height: 100%;
+        width: 300px;
+
+        .headers {
+            width: 100%;
+            height: 50px;
+            display: flex;
+            flex-flow: column;
+            align-items: flex-start;
+            margin: 12px 10px;
+
+            h2 {
+                max-width: 100%;
+                margin: 0;
+                height: 50px;
+            }
+
+            p {
+                margin: 0;
+                font-size: 1rem;
+                color: var(--text-muted);
+            }
+        }
+    }
+}
+
+.songList {
+    height: fit-content;
+    background: var(--bg);
+    border: var(--border-card);
+    border-radius: 10px;
+    grid-column: 10/11;
+    grid-row: 8;
+    grid-auto-rows: auto;
+}
+
+.songItem {
+    margin: 0;
+    position: relative;
+    width: 100%;
+    height: 75px;
+    border-radius: 10px;
+    background: var(--gradient);
+
+    * {
+        position: absolute;
+    }
+
+    h3 {
+        position: absolute;
+        width: fit-content;
+        margin: 0;
+        top: 10px;
+        left: 20px;
+    }
+
+    h4 {
+        top: 15px;
+        left: 20px;
+        color: var(--text-muted);
+    }
+
+    .songRating {
+        bottom: 5px;
+        right: 5px;
+    }
+
+    &:hover {
+        background: var(--gradient-hover);
+    }
+}

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DataImportToPostgres": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\Luke\\source\\repos\\MediaBoard\\DataImportToPostgres"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+﻿using MediaBoard.Server.Features.Artists.SearchArtists;
+using Microsoft.AspNetCore.Mvc;
+
+namespace MediaBoard.Server.Controllers
+{
+    [Route("[controller]")]
+    [ApiController]
+    public class ArtistController : ControllerBase
+    {
+        private readonly ISearchService _searchService;
+
+        public ArtistController(ISearchService service)
+        {
+            _searchService = service;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ArtistSearchDTO>>> Get([FromQuery] string query, [FromQuery] int limit = 15, [FromQuery] int lastId = -1, [FromQuery] int lastAlbumCount = -1)
+        {
+            if (string.IsNullOrWhiteSpace(query)) return BadRequest("Seach query cannot be empty.");
+
+            IEnumerable<ArtistSearchDTO> artistDtos = await _searchService.GetArtistBySearchAsync(query, limit, lastId, lastAlbumCount);
+            return Ok(artistDtos);
+        }
+    }
+}

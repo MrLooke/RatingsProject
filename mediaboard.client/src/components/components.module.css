@@ -1,0 +1,110 @@
+.baseButton {
+    color: var(--text);
+    cursor: pointer;
+}
+
+.neutralButton {
+    border-radius: 10px;
+    border: var(--border-card);
+    background: var(--bg-light);
+    box-shadow: var(--shadow);
+}
+
+.neutralButton:hover {
+    background: var(--gradient-hover);
+}
+
+.primaryButton {
+    border-radius: 10px;
+    border: var(--border-card);
+    background: var(--primary-gradient);
+    box-shadow: var(--shadow);
+}
+
+.primaryButton:hover {
+    background: var(--primary-gradient-hover);
+}
+
+.secondaryButton {
+    border-radius: 10px;
+    border: var(--border-card);
+    background: var(--secondary-gradient);
+    box-shadow: var(--shadow);
+}
+
+.secondaryButton:hover {
+    background: var(--secondary-gradient-hover);
+}
+
+.smallButton {
+    border-radius: 6px;
+    width: 60px;
+    height: 30px;
+    font-size: 0.6rem;
+}
+
+.mediumButton {
+    font-size: 0.85rem;
+    width: 120px;
+    height: 45px;
+}
+
+.largeButton {
+    font-size: 1.25rem;
+    width: 200px;
+    height: 80px;
+}
+
+nav {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0px;
+    background: var(--bg);
+
+    a {
+        text-align: center;
+        text-decoration: none;
+        color: var(--text);
+    }
+
+    ul {
+        font-size: 1.2rem;
+        text-align: center;
+        margin: 0;
+        padding: 10px 20px;
+    }
+}
+
+.baseTextInput {
+    box-sizing: border-box;
+    height: 50px;
+    width: 200px;
+    background-color: var(--bg-light);
+    border-radius: 20px;
+    border: 2px solid var(--bg-light);
+    outline: none;
+
+    color: var(--text);
+    font-size: 1rem;
+
+    transition: border-color 0.3s ease-in-out;
+    padding: 0px 14px;
+
+    &:focus {
+        border-color: var(--text);
+    }
+}
+
+.baseCard {
+    border: var(--border-card);
+    border-top: solid 1px var(--highlight);
+    border-radius: 10px;
+    background: var(--gradient);
+    box-shadow: var(--shadow);
+}
+
+.baseCard:hover {
+    background: var(--gradient-hover);
+}

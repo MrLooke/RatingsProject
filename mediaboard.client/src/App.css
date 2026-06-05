@@ -1,0 +1,48 @@
+﻿#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+th,
+td {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.card {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    width: 350px;
+    height: 180px;
+    border: var(--border-card);
+    border-top: solid 1px var(--highlight);
+    border-radius: 10px;
+    background: var(--gradient);
+    box-shadow: var(--shadow);
+
+    * {
+        margin-left: 20px;
+    }
+
+    h1 {
+        font-weight: normal;
+        font-size: 1.5rem;
+        margin: 20px 15px 5px 20px;
+    }
+
+    p {
+        margin-top: 5px;
+        color: var(--text-muted);
+    }
+
+    button {
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+}
+
+.card:hover {
+    background: var(--gradient-hover);
+}
