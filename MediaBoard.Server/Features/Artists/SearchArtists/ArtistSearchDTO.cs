@@ -2,11 +2,11 @@
 
 namespace MediaBoard.Server.Features.Artists.SearchArtists
 {
-    public record ArtistSearchDTO(int Id, string Name, string Description = "")
+    public record ArtistSearchDTO(int? Id, string Name, long? RankScore)
     {
-        public static ArtistSearchDTO FromEntity(Artist artist)
+        public static ArtistSearchDTO FromEntity(SearchRanking artist)
         {
-            return new ArtistSearchDTO(artist.Id, artist.Name, artist.Description ?? "");
+            return new ArtistSearchDTO(artist.ArtistId, artist.Name, artist.RankScore);
         }
     }
 }

@@ -1,7 +1,7 @@
 # For more info on HTTP files go to https://aka.ms/vs/httpfile
 @host = localhost
-@port = 7281
-@baseUrl = https://{{host}}:{{port}}
+@port = 5028
+@baseUrl = http://{{host}}:{{port}}
 
 ### Search Artist
 GET {{baseUrl}}/artist?query=Clairo&limit=15

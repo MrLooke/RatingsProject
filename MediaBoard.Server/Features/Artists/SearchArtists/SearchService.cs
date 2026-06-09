@@ -40,7 +40,7 @@ namespace MediaBoard.Server.Features.Artists.SearchArtists
                 .Take(limit)
                 .ToListAsync();
 
-            IEnumerable<ArtistSearchDTO> artistDtos = artistObjects.Select(a => new ArtistSearchDTO(a.ArtistId!.Value, a.Name ?? ""));
+            IEnumerable<ArtistSearchDTO> artistDtos = artistObjects.Select(a => new ArtistSearchDTO(a.ArtistId!.Value, a.Name ?? "", a.RankScore));
             return artistDtos;
         }
     }
