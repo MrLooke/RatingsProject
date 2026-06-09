@@ -1,27 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { searchArtists } from "@/api/artistsApi";
+import useDebounce from "@/hooks/useDebounce";
 import InputText from "@/components/InputText";
+import SearchResults from "./SearchResults";
+import styles from "@/features/search/search.module.css";
 
 const SearchBar = () => {
 	const [query, setQuery] = useState("");
-
-	const artists = useQuery({
-		queryKey: ["search", query],
-		queryFn: () => searchArtists(query),
-		enabled: query.length > 0,
-	});
+	const debouncedQuery = useDebounce(query, 300);
 
 	const handleQuerySubmit = (queryString: string) => {
 		setQuery(queryString);
 	};
 
 	return (
-		<InputText
-			onEnterPress={handleQuerySubmit}
-			style={{ width: "350px", marginLeft: "25px", marginRight: "5px" }}
-			placeholder="Search..."
-		/>
+		<div className={styles.searchContainer}>
+			<InputText
+				className={styles.searchInput}
+				onEnterPress={handleQuerySubmit}
+				placeholder="Search..."
+			/>
+
+			<SearchResults query={debouncedQuery} />
+		</div>
 	);
 };
 
