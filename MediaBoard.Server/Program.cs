@@ -1,5 +1,6 @@
 using MediaBoard.Server.Entities;
 using MediaBoard.Server.Features.Artists.SearchArtists;
+using MediaBoard.Server.Features.Artists.ArtistPage;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ builder.Services.AddCors(options =>
 
 //Repository Classes
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<IArtistService, ArtistService>();
 
 //DB Context
 builder.Services.AddDbContextPool<AppDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

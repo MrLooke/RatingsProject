@@ -11,15 +11,21 @@ namespace MediaBoard.Server.Features.Artists.ArtistPage
             _dbContext = dbContext ?? throw new ArgumentException(nameof(dbContext));
         }
 
-        public async Task<Artist> GetArtistAsync(int artistId)
+        public async Task<ArtistPageDTO> GetArtistDetailsAsync(int artistId)
         {
-            Artist? artist = await _dbContext.Artists.AsNoTracking().Where(a => a.Id == artistId).FirstOrDefaultAsync();
-            if (artist == null)
-            {
-                throw new KeyNotFoundException("Artist ID was not found.");
-            }
+            var artistDetails = await _dbContext
+                .Artists
+                .AsNoTracking()
+                .Where(a => a.Id == artistId)
+                .Select(a => new ArtistPageDTO(a.Id, a.Name,
+                    a.Albums
+                        .OrderByDescending(al => al.Year)
+                        .Select(al => new AlbumDTO(al.Id, al.Title, al.Year))
+                        .ToList()
+                ))
+                .FirstOrDefaultAsync();
 
-            return artist;
+            return artistDetails;
         }
     }
 }

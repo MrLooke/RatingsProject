@@ -1,4 +1,5 @@
-﻿using MediaBoard.Server.Features.Artists.SearchArtists;
+﻿using MediaBoard.Server.Features.Artists.ArtistPage;
+using MediaBoard.Server.Features.Artists.SearchArtists;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MediaBoard.Server.Controllers
@@ -8,10 +9,12 @@ namespace MediaBoard.Server.Controllers
     public class ArtistController : ControllerBase
     {
         private readonly ISearchService _searchService;
+        private readonly IArtistService _artistService;
 
-        public ArtistController(ISearchService service)
+        public ArtistController(ISearchService searchService, IArtistService artistService)
         {
-            _searchService = service;
+            _searchService = searchService;
+            _artistService = artistService;
         }
 
         [HttpGet]
@@ -21,6 +24,13 @@ namespace MediaBoard.Server.Controllers
 
             IEnumerable<ArtistSearchDTO> artistDtos = await _searchService.GetArtistBySearchAsync(query, limit, lastId, lastRankScore);
             return Ok(artistDtos);
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ArtistPageDTO>> GetById(int id)
+        {
+            ArtistPageDTO artistPage = await _artistService.GetArtistDetailsAsync(id);
+            return artistPage;
         }
     }
 }
