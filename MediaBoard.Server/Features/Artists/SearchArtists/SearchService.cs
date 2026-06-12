@@ -17,19 +17,19 @@ namespace MediaBoard.Server.Features.Artists.SearchArtists
                 .AsNoTracking()
                 .Where(a => EF.Functions.ILike(a.Name, $"{searchString}%"));
 
-
             if (lastId.HasValue && lastRankScore.HasValue)
             {
                 query = query.Where(x => x.RankScore < lastRankScore || (x.RankScore == lastRankScore && x.ArtistId < lastId));
             }
 
-            var artistObjects = await query
+            var artistDtos = await query
+                .Where(a => a.ArtistId != null)
                 .OrderByDescending(a => a.RankScore)
                 .ThenByDescending(a => a.ArtistId)
                 .Take(limit)
+                .Select(a => new ArtistSearchDTO(a.ArtistId!.Value, a.Name ?? "", a.RankScore))
                 .ToListAsync();
 
-            IEnumerable<ArtistSearchDTO> artistDtos = artistObjects.Where(a => a.ArtistId.HasValue).Select(ArtistSearchDTO.FromEntity);
             return artistDtos;
         }
     }
