@@ -15,7 +15,7 @@ namespace MediaBoard.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ArtistSearchDTO>>> Get([FromQuery] string query, [FromQuery] int limit = 15, [FromQuery] int lastId = -1, [FromQuery] int lastRankScore = -1)
+        public async Task<ActionResult<IEnumerable<ArtistSearchDTO>>> Get([FromQuery] string query, [FromQuery] int limit = 15, [FromQuery] int? lastId = null, [FromQuery] int? lastRankScore = null)
         {
             if (string.IsNullOrWhiteSpace(query)) return BadRequest("Seach query cannot be empty.");
 
