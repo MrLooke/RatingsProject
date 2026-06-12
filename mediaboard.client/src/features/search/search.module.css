@@ -52,3 +52,13 @@
 .searchItem:hover {
 	background-color: var(--bg-very-light);
 }
+
+.searchStatusItem {
+	height: 50px;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.75rem;
+	color: var(--text-muted, #888);
+}

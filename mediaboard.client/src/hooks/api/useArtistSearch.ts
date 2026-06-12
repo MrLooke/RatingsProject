@@ -1,29 +1,21 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { searchArtists } from "@/api/artistsApi";
 
-interface PageItemParams {
-	lastId: number;
-	lastRankScore: number;
-}
-
 const useArtistSearch = (query: string) => {
-	const { data, error, fetchNextPage, hasNextPage } = useInfiniteQuery({
+	const { data, error, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
 		queryKey: ["artists", "search", query],
-		queryFn: () => searchArtists(query),
+		queryFn: ({ pageParam }) =>
+			searchArtists(query, pageParam.lastId, pageParam.lastRankScore),
 		enabled: query.length > 0,
 		initialPageParam: { lastId: -1, lastRankScore: -1 },
 		getNextPageParam: (lastPage) => {
+			if (lastPage.length === 0) return undefined;
 			const last = lastPage[lastPage.length - 1];
-			const nextPageParams: PageItemParams = {
-				lastId: last.id,
-				lastRankScore: last.rankScore,
-			};
-
-			return nextPageParams;
+			return { lastId: last.id, lastRankScore: last.rankScore };
 		},
 	});
 
-	return { data, error, fetchNextPage, hasNextPage };
+	return { data, error, fetchNextPage, hasNextPage, isFetching };
 };
 
 export default useArtistSearch;
