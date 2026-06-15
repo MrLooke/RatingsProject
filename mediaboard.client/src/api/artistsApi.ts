@@ -23,3 +23,13 @@ export const searchArtists = async (
 	}
 	return response.json();
 };
+
+export const getArtistPage = async (artistId: number) => {
+	const response = await fetch(`${apiUrl}/artist/${artistId}`);
+
+	if (!response.ok) {
+		throw new Error("Error getting artist's information.");
+	}
+
+	return response.json();
+};
