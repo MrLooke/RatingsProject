@@ -1,22 +1,28 @@
 import { useEffect, useRef } from "react";
 import useArtistSearch from "@/hooks/api/useArtistSearch";
 import styles from "@/features/search/search.module.css";
+import { Link } from "@tanstack/react-router";
 
 const SearchItem = ({
+	id,
 	title,
 	subtitle = null,
 	imgSrc = null,
 }: {
+	id: number;
 	title: string;
 	subtitle?: string | null;
 	imgSrc?: string | null;
 }) => {
+	const link = `/artist/${id}`;
 	return (
-		<li className={styles.searchItem}>
-			<h2 title={title}>{title}</h2>
-			{subtitle && <h3></h3>}
-			{imgSrc && <img></img>}
-		</li>
+		<Link to={link}>
+			<li className={styles.searchItem}>
+				<h2 title={title}>{title}</h2>
+				{subtitle && <h3></h3>}
+				{imgSrc && <img></img>}
+			</li>
+		</Link>
 	);
 };
 
@@ -75,7 +81,11 @@ const SearchResults = ({ query }: { query: string }) => {
 			onMouseDown={(e) => e.preventDefault()}
 		>
 			{results.map((artist) => (
-				<SearchItem key={artist.id} title={artist.name} />
+				<SearchItem
+					key={artist.id}
+					id={artist.id}
+					title={artist.name}
+				/>
 			))}
 			{isFetching && (
 				<li className={styles.searchStatusItem}>Loading...</li>
