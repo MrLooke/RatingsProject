@@ -1,7 +1,7 @@
 import ArtistHeader from "@/features/artist/ArtistHeader";
 import styles from "@/features/artist/artist.module.css";
 import ClairoImg from "@/assets/Clairo.jpg";
-import AlbumCard from "./AlbumCard";
+import FullAlbumCard from "./AlbumCard";
 import SongListItem from "./SongListItem";
 import useArtistPage from "@/hooks/api/useArtistPage";
 
@@ -102,7 +102,7 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 
 			<div className={styles.albums}>
 				{data?.albums.map((album) => (
-					<AlbumCard
+					<FullAlbumCard
 						key={album.id}
 						title={album.title}
 						year={album.year?.toString()}

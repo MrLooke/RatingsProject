@@ -2,7 +2,7 @@ import styles from "@/features/artist/artist.module.css";
 import Card from "@/components/Card";
 import DefaultCover from "@/assets/music-album.svg?react";
 
-const AlbumCard = ({
+const FullAlbumCard = ({
 	title,
 	year,
 	imageSource,
@@ -35,4 +35,4 @@ const AlbumCard = ({
 	);
 };
 
-export default AlbumCard;
+export default FullAlbumCard;
