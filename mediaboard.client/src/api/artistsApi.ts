@@ -8,12 +8,15 @@ export interface ArtistSearchDTO {
 
 export const searchArtists = async (
 	query: string,
-	lastId: number = -1,
-	lastRankScore: number = -1,
+	lastId: number | null = null,
+	lastRankScore: number | null = null,
 ): Promise<ArtistSearchDTO[]> => {
-	const response = await fetch(
-		`${apiUrl}/artist?query=${query}&limit=15&lastId=${lastId}&lastRankScore=${lastRankScore}`,
-	);
+	const params = new URLSearchParams({ query, limit: "15" });
+	if (lastId !== null) params.append("lastId", String(lastId));
+	if (lastRankScore !== null)
+		params.append("lastRankScore", String(lastRankScore));
+
+	const response = await fetch(`${apiUrl}/artist?${params}`);
 
 	if (!response.ok) {
 		throw new Error("Error with search query.");
