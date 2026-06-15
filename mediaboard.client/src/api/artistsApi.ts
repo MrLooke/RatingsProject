@@ -24,7 +24,20 @@ export const searchArtists = async (
 	return response.json();
 };
 
-export const getArtistPage = async (artistId: number) => {
+interface Album {
+	id: number;
+	title: string;
+	year?: number;
+}
+
+export interface ArtistPage {
+	id: number;
+	name: string;
+	description?: string;
+	albums: Album[];
+}
+
+export const getArtistPage = async (artistId: number): Promise<ArtistPage> => {
 	const response = await fetch(`${apiUrl}/artist/${artistId}`);
 
 	if (!response.ok) {

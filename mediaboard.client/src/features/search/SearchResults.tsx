@@ -21,7 +21,8 @@ const SearchItem = ({
 };
 
 const SearchResults = ({ query }: { query: string }) => {
-	const { data, isFetching, fetchNextPage, hasNextPage } = useArtistSearch(query);
+	const { data, isFetching, fetchNextPage, hasNextPage } =
+		useArtistSearch(query);
 	const results = data?.pages.flat() ?? [];
 
 	const containerRef = useRef<HTMLUListElement>(null);
@@ -47,7 +48,10 @@ const SearchResults = ({ query }: { query: string }) => {
 
 	if (!data && isFetching) {
 		return (
-			<ul className={styles.resultsContainer} onMouseDown={(e) => e.preventDefault()}>
+			<ul
+				className={styles.resultsContainer}
+				onMouseDown={(e) => e.preventDefault()}
+			>
 				<li className={styles.searchStatusItem}>Loading...</li>
 			</ul>
 		);
@@ -55,7 +59,10 @@ const SearchResults = ({ query }: { query: string }) => {
 
 	if (results.length === 0) {
 		return (
-			<ul className={styles.resultsContainer} onMouseDown={(e) => e.preventDefault()}>
+			<ul
+				className={styles.resultsContainer}
+				onMouseDown={(e) => e.preventDefault()}
+			>
 				<li className={styles.searchStatusItem}>No results</li>
 			</ul>
 		);
@@ -70,7 +77,9 @@ const SearchResults = ({ query }: { query: string }) => {
 			{results.map((artist) => (
 				<SearchItem key={artist.id} title={artist.name} />
 			))}
-			{isFetching && <li className={styles.searchStatusItem}>Loading...</li>}
+			{isFetching && (
+				<li className={styles.searchStatusItem}>Loading...</li>
+			)}
 			<li ref={sentinelRef} />
 		</ul>
 	);

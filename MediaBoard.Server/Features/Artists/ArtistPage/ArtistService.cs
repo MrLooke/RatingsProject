@@ -17,9 +17,10 @@ namespace MediaBoard.Server.Features.Artists.ArtistPage
                 .Artists
                 .AsNoTracking()
                 .Where(a => a.Id == artistId)
-                .Select(a => new ArtistPageDTO(a.Id, a.Name,
+                .Select(a => new ArtistPageDTO(a.Id, a.Name, a.Description,
                     a.Albums
-                        .OrderByDescending(al => al.Year)
+                        .OrderBy(a => a.Year == null)
+                        .ThenByDescending(al => al.Year)
                         .Select(al => new AlbumDTO(al.Id, al.Title, al.Year))
                         .ToList()
                 ))
