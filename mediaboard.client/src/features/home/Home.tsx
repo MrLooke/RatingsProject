@@ -2,6 +2,7 @@ import "@/App.css";
 import styles from "./home.module.css";
 import HomeAlbumCard from "./HomeAlbumCard";
 import TopArtistList from "./TopArtistList";
+import { mockNewReleases } from "@/mock/homeData";
 
 function Home() {
 	return (
@@ -12,10 +13,14 @@ function Home() {
 					<h5>See all</h5>
 				</div>
 				<div className={styles.albumGrid}>
-					<HomeAlbumCard title="Charm" artist="Clairo" rating={4.5} />
-					<HomeAlbumCard title="Charm" artist="Clairo" rating={4.5} />
-					<HomeAlbumCard title="Charm" artist="Clairo" rating={4.5} />
-					<HomeAlbumCard title="Charm" artist="Clairo" rating={4.5} />
+					{mockNewReleases.map((album) => (
+						<HomeAlbumCard
+							key={`${album.title}-${album.artist}`}
+							title={album.title}
+							artist={album.artist}
+							rating={album.rating}
+						/>
+					))}
 				</div>
 			</div>
 			<div className={styles.topArtistListContainer}>

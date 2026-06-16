@@ -1,7 +1,7 @@
 import "@/App.css";
 import styles from "@/features/home/home.module.css";
-import Star from "@/assets/star.svg?react";
 import ImageCard from "../../components/Cards/ImageCard";
+import RatingBadge from "@/components/RatingBadge";
 
 interface HomeAlbumCardProps {
 	title: string;
@@ -16,10 +16,7 @@ const HomeAlbumCard = ({ title, artist, rating }: HomeAlbumCardProps) => {
 			className={styles.albumCard}
 			imageContainerClass={styles.albumImgContainer}
 		>
-			<div className={styles.rating}>
-				<Star stroke="currentColor" />
-				<p>{rating}</p>
-			</div>
+			<RatingBadge rating={rating} />
 		</ImageCard>
 	);
 };
