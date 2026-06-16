@@ -1,4 +1,3 @@
-import ArtistHeader from "@/features/artist/ArtistHeader";
 import styles from "@/features/artist/artist.module.css";
 import ClairoImg from "@/assets/Clairo.jpg";
 import FullAlbumCard from "./FullAlbumCard";
@@ -95,7 +94,8 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 	return (
 		<div className={styles.artistBody}>
 			<img src={ClairoImg} />
-			<ArtistHeader>{cleanArtistName}</ArtistHeader>
+			<h1 className={styles.artistName}>{cleanArtistName}</h1>
+
 			{data.description && (
 				<p className={styles.description}>{data.description}</p>
 			)}

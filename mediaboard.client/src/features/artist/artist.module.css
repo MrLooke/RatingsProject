@@ -27,8 +27,10 @@ img {
 }
 
 .artistName {
+	margin: 0;
+	padding: 0;
 	font-size: 5rem;
-	/* font-size: clamp(1rem, 8vw, 5rem); */
+	font-weight: normal;
 
 	grid-column: 2/9;
 	grid-row: 2/4;
