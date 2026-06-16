@@ -1,6 +1,5 @@
 import "@/App.css";
 import styles from "./home.module.css";
-import ImageCard from "../../components/Cards/ImageCard";
 import HomeAlbumCard from "./HomeAlbumCard";
 import TopArtistList from "./TopArtistList";
 
