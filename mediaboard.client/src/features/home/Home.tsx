@@ -20,15 +20,7 @@ function Home() {
 				</div>
 			</div>
 			<div className={styles.topArtistListContainer}>
-				<h4
-					style={{
-						textAlign: "left",
-						marginTop: "40px",
-						marginBottom: "10px",
-					}}
-				>
-					Top Artists
-				</h4>
+				<h4>Top Artists</h4>
 				<TopArtistList />
 			</div>
 		</div>
