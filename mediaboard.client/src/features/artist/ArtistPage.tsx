@@ -1,7 +1,7 @@
 import ArtistHeader from "@/features/artist/ArtistHeader";
 import styles from "@/features/artist/artist.module.css";
 import ClairoImg from "@/assets/Clairo.jpg";
-import FullAlbumCard from "./AlbumCard";
+import FullAlbumCard from "./FullAlbumCard";
 import SongListItem from "./SongListItem";
 import useArtistPage from "@/hooks/api/useArtistPage";
 

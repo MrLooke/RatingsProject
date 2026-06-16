@@ -1,5 +1,5 @@
 import styles from "@/features/artist/artist.module.css";
-import Card from "@/components/Card";
+import Card from "@/components/Cards/Card";
 import DefaultCover from "@/assets/music-album.svg?react";
 
 const FullAlbumCard = ({
