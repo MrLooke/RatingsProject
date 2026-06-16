@@ -4,77 +4,77 @@ import FullAlbumCard from "./FullAlbumCard";
 import SongListItem from "./SongListItem";
 import useArtistPage from "@/hooks/api/useArtistPage";
 
+const songData = [
+	{
+		id: "song_01",
+		title: "Sofia",
+		album: "Immunity",
+		rating: 4.9,
+	},
+	{
+		id: "song_02",
+		title: "Bags",
+		album: "Immunity",
+		rating: 4.8,
+	},
+	{
+		id: "song_03",
+		title: "Pretty Girl",
+		album: "diary 001",
+		rating: 4.7,
+	},
+	{
+		id: "song_04",
+		title: "Juna",
+		album: "Charm",
+		rating: 4.6,
+	},
+	{
+		id: "song_05",
+		title: "Sexy to Someone",
+		album: "Charm",
+		rating: 4.5,
+	},
+	{
+		id: "song_06",
+		title: "Amoeba",
+		album: "Sling",
+		rating: 4.4,
+	},
+	{
+		id: "song_07",
+		title: "Flaming Hot Cheetos",
+		album: "diary 001",
+		rating: 4.3,
+	},
+	{
+		id: "song_08",
+		title: "Blouse",
+		album: "Sling",
+		rating: 4.2,
+	},
+	{
+		id: "song_09",
+		title: "4EVER",
+		album: "Single",
+		rating: 4.6,
+	},
+	{
+		id: "song_10",
+		title: "Bubble Gum",
+		album: "Single",
+		rating: 4.3,
+	},
+];
+
 const ArtistPage = ({ artistId }: { artistId: number }) => {
+	const { data, error, isPending, isError } = useArtistPage(artistId);
+
 	if (artistId == null) {
 		return (
 			<div className={styles.artistBodyMessage}>Invalid artist ID.</div>
 		);
 	}
-
-	const songData = [
-		{
-			id: "song_01",
-			title: "Sofia",
-			album: "Immunity",
-			rating: 4.9,
-		},
-		{
-			id: "song_02",
-			title: "Bags",
-			album: "Immunity",
-			rating: 4.8,
-		},
-		{
-			id: "song_03",
-			title: "Pretty Girl",
-			album: "diary 001",
-			rating: 4.7,
-		},
-		{
-			id: "song_04",
-			title: "Juna",
-			album: "Charm",
-			rating: 4.6,
-		},
-		{
-			id: "song_05",
-			title: "Sexy to Someone",
-			album: "Charm",
-			rating: 4.5,
-		},
-		{
-			id: "song_06",
-			title: "Amoeba",
-			album: "Sling",
-			rating: 4.4,
-		},
-		{
-			id: "song_07",
-			title: "Flaming Hot Cheetos",
-			album: "diary 001",
-			rating: 4.3,
-		},
-		{
-			id: "song_08",
-			title: "Blouse",
-			album: "Sling",
-			rating: 4.2,
-		},
-		{
-			id: "song_09",
-			title: "4EVER",
-			album: "Single",
-			rating: 4.6,
-		},
-		{
-			id: "song_10",
-			title: "Bubble Gum",
-			album: "Single",
-			rating: 4.3,
-		},
-	];
-
-	const { data, error, isPending, isError } = useArtistPage(artistId);
 
 	if (isPending) {
 		return <div className={styles.artistBodyMessage}>Loading...</div>;
