@@ -114,7 +114,7 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 				{songData
 					.sort((a, b) => b.rating - a.rating)
 					.map((song) => (
-						<SongListItem {...song} />
+						<SongListItem key={song.id} {...song} />
 					))}
 			</div>
 		</div>
