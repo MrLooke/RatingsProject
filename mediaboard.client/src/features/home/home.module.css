@@ -96,8 +96,8 @@
 				width: 100%;
 
 				display: grid;
-				grid-template-columns: 50px 50px 1fr 50px;
-				grid-template-rows: 50px;
+				grid-template-columns: 50px 60px 1fr 50px;
+				grid-template-rows: 40px 40px;
 
 				border-bottom: solid 1px var(--highlight);
 
@@ -140,23 +140,28 @@
 				}
 
 				.artistInfo {
-					* {
-						text-align: left;
-					}
+					display: contents;
 
 					h5 {
 						margin: 0;
 						padding: 0;
+
+						font-size: 1rem;
+						text-align: left;
+						line-height: 60px;
+
 						grid-column: 3;
-						grid-row: span 1;
+						grid-row: 1;
 					}
 
 					p {
 						margin: 0;
 						padding: 0;
+						text-align: left;
+						color: var(--text-muted);
 
 						grid-column: 3;
-						grid-row: span 1;
+						grid-row: 2;
 					}
 				}
 
