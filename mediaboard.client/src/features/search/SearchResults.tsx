@@ -18,7 +18,7 @@ const SearchItem = ({
 	return (
 		<Link to={link}>
 			<li className={styles.searchItem}>
-				<h2 header={title}>{title}</h2>
+				<h2>{title}</h2>
 				{subtitle && <h3></h3>}
 				{imgSrc && <img></img>}
 			</li>
