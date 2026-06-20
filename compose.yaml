@@ -1,0 +1,15 @@
+services:
+  client:
+    build: 
+      context: ./mediaboard.client/
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    ports:
+      - "5173:80"
+
+  api:
+    build: ./MediaBoard.Server/
+    environment:
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
+    ports:
+      - "8080:8080"
