@@ -1,0 +1,21 @@
+services:
+  client:
+    build:
+      context: ./mediaboard.client/
+      dockerfile: Dockerfile.debug
+    volumes:
+      - ./mediaboard.client:/app
+      - /app/node_modules
+    ports: !override
+      - "5173:5173"
+    command: sh -c "npm ci && npm run dev"
+
+  api:
+    build:
+      context: ./MediaBoard.Server/
+      dockerfile: Dockerfile.debug
+    volumes:
+      - ./MediaBoard.Server:/app
+    ports: !override
+      - "8080:8080"
+    command: sleep infinity
