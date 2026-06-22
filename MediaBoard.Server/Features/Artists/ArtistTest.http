@@ -1,6 +1,6 @@
 # For more info on HTTP files go to https://aka.ms/vs/httpfile
 @host = localhost
-@port = 5028
+@port = 8080
 @baseUrl = http://{{host}}:{{port}}
 
 ### Search Artist

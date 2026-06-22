@@ -367,5 +367,9 @@ FodyWeavers.xsd
 **XmlParsing/XmlFiles/*
 
 
-#App setttings
+#App setttings and Env
 appsettings.json
+/.env
+
+# Dump files
+*.dump
