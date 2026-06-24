@@ -197,9 +197,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Rating>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("rating");
+            entity.HasKey(r => new { r.UserId, r.MediaId });
+
+            entity.ToTable("rating");
 
             entity.Property(e => e.MediaId)
                 .HasMaxLength(100)
@@ -208,12 +208,13 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Review).HasColumnName("review");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.HasOne(d => d.User).WithMany(u => u.Ratings)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("rating_user_id_fkey");
 
-            entity.HasIndex(r => new { r.UserId, r.MediaId })
-                .IsUnique();
+            entity.HasOne(d => d.Album).WithMany(a => a.Ratings)
+                .HasForeignKey(d => d.MediaId)
+                .HasConstraintName("rating_media_id_fkey");
         });
 
         modelBuilder.Entity<SearchRanking>(entity =>

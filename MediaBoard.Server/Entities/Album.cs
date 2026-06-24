@@ -20,4 +20,6 @@ public partial class Album
     public virtual ICollection<Genre> Genres { get; set; } = new List<Genre>();
 
     public virtual ICollection<MusicStyle> Styles { get; set; } = new List<MusicStyle>();
+
+    public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 }

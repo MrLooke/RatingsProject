@@ -11,7 +11,7 @@ namespace MediaBoard.Server.Features.AlbumRating
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task SaveRating(int userId, string albumId, string review, short rating)
+        public async Task SaveRating(int userId, int albumId, string review, short rating)
         {
             ValidateRating(userId, albumId, review, rating);
 
@@ -38,16 +38,11 @@ namespace MediaBoard.Server.Features.AlbumRating
             await _dbContext.SaveChangesAsync();
         }
 
-        private void ValidateRating(int userId, string albumId, string review, short rating)
+        private void ValidateRating(int userId, int albumId, string review, short rating)
         {
             if (rating < 1 || rating > 10)
             {
                 throw new ArgumentOutOfRangeException("Rating must be inclusively between 1 and 10");
-            }
-
-            if(string.IsNullOrEmpty(albumId))
-            {
-                throw new ArgumentNullException("Album ID cannot be null or empty.");
             }
         }
     }

@@ -6,13 +6,14 @@ namespace MediaBoard.Server.Entities;
 
 public partial class Rating
 {
-    public int? UserId { get; set; }
+    public int UserId { get; set; }
 
-    public string MediaId { get; set; } = null!;
+    public int MediaId { get; set; }
 
     public string? Review { get; set; }
 
-    [Column("rating")] public short? Score { get; set; }
+    [Column("rating")] public short Score { get; set; }
 
     public virtual AppUser? User { get; set; }
+    public virtual Album? Album { get; set; }
 }

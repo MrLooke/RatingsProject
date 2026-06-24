@@ -14,4 +14,6 @@ public partial class AppUser
     public string PasswordHash { get; set; } = null!;
 
     public DateTime? CreatedAt { get; set; }
+
+    public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 }
