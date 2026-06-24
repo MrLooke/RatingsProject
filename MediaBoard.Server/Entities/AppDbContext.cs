@@ -211,6 +211,9 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.User).WithMany()
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("rating_user_id_fkey");
+
+            entity.HasIndex(r => new { r.UserId, r.MediaId })
+                .IsUnique();
         });
 
         modelBuilder.Entity<SearchRanking>(entity =>
