@@ -204,7 +204,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.MediaId)
                 .HasMaxLength(100)
                 .HasColumnName("media_id");
-            entity.Property(e => e.Rating1).HasColumnName("rating");
+            entity.Property(e => e.Score).HasColumnName("rating");
             entity.Property(e => e.Review).HasColumnName("review");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
