@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MediaBoard.Server.Features.AlbumRating
 {
-    public class RatingService
+    public class RatingService : IRatingService
     {
         private readonly AppDbContext _dbContext;
         public RatingService(AppDbContext dbContext)
@@ -11,7 +11,7 @@ namespace MediaBoard.Server.Features.AlbumRating
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task SaveRating(int userId, int albumId, string review, short rating)
+        public async Task SaveRating(int userId, int albumId, string? review, short rating)
         {
             ValidateRating(userId, albumId, review, rating);
 
@@ -38,7 +38,7 @@ namespace MediaBoard.Server.Features.AlbumRating
             await _dbContext.SaveChangesAsync();
         }
 
-        private void ValidateRating(int userId, int albumId, string review, short rating)
+        private void ValidateRating(int userId, int albumId, string? review, short rating)
         {
             if (rating < 1 || rating > 10)
             {

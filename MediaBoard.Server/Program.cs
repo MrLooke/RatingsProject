@@ -1,4 +1,5 @@
 using MediaBoard.Server.Entities;
+using MediaBoard.Server.Features.AlbumRating;
 using MediaBoard.Server.Features.Artists.SearchArtists;
 using MediaBoard.Server.Features.Artists.ArtistPage;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ builder.Services.AddCors(options =>
 //Repository Classes
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IArtistService, ArtistService>();
+builder.Services.AddScoped<IRatingService, RatingService>();
 
 //DB Context
 builder.Services.AddDbContextPool<AppDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
