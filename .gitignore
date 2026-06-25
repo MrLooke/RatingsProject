@@ -373,3 +373,4 @@ appsettings.json
 
 # Dump files
 *.dump
+/MediaBoard.Server/Features/Authentication/AuthTest.http

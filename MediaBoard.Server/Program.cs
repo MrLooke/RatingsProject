@@ -1,8 +1,12 @@
+using MediaBoard.Server.Exceptions;
 using MediaBoard.Server.Entities;
 using MediaBoard.Server.Features.AlbumRating;
 using MediaBoard.Server.Features.Artists.SearchArtists;
 using MediaBoard.Server.Features.Artists.ArtistPage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using MediaBoard.Server.Features.Authentication;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -21,7 +25,11 @@ builder.Services.AddCors(options =>
         });
 });
 
+//Password Hasher
+builder.Services.AddScoped<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();
+
 //Repository Classes
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IArtistService, ArtistService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
@@ -30,6 +38,23 @@ builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddDbContextPool<AppDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+        var (status, message) = exception switch { 
+            ConflictException ex => (409, ex.Message),
+            NotFoundException ex => (404, ex.Message),
+            UnauthorizedException ex => (401, ex.Message),
+            _ => (500, "An unexpected error occurred.")
+        };
+
+        context.Response.StatusCode = status;
+        await context.Response.WriteAsJsonAsync(new { error = message });
+    });
+});
 
 app.UseRouting();
 app.UseCors("AllowFrontEnd");
