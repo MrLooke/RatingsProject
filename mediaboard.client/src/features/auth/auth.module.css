@@ -1,0 +1,73 @@
+.authContainer {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.authCard {
+    border: var(--border-card);
+    border-top: solid 1px var(--highlight);
+    border-radius: 10px;
+    background: var(--gradient);
+    box-shadow: var(--shadow);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: left;
+}
+
+.authCard h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.field label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.input {
+    width: 100%;
+    height: 44px;
+}
+
+.error {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin: 0;
+    width: 100%;
+}
+
+.switchPrompt {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin: 0;
+
+    a {
+        color: var(--primary-bold);
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+}
