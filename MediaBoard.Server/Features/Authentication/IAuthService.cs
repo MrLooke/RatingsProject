@@ -7,5 +7,7 @@ namespace MediaBoard.Server.Features.Authentication
         Task<RegisterResult> RegisterUserAsync(RegisterRequest request);
 
         Task<LoginResult> LoginUserAsync(LoginRequest request);
+
+        string GenerateToken(LoginResult user);
     }
 }

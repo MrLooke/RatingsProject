@@ -8,9 +8,11 @@ namespace MediaBoard.Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly IWebHostEnvironment _env;
+        public AuthController(IAuthService authService, IWebHostEnvironment env)
         {
             _authService = authService;
+            _env = env;
         }
 
         [HttpPost("register")]
@@ -24,6 +26,17 @@ namespace MediaBoard.Server.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             LoginResult user = await _authService.LoginUserAsync(request);
+            string token = _authService.GenerateToken(user);
+        
+
+            Response.Cookies.Append("access_token", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = !_env.IsDevelopment(),
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+            });
+
             return Ok(user);
         }
     }
