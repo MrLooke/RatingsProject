@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext } from "react";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import type { AuthResult } from "@/api/authApi";
@@ -14,24 +14,20 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-	const [user, setUser] = useState<AuthResult | null>(null);
+	const queryClient = useQueryClient();
 
-	const { data, isLoading } = useQuery({
+	const { data: user = null, isLoading } = useQuery({
 		queryKey: ["me"],
 		queryFn: checkUser,
 		retry: false,
 		staleTime: Infinity,
 	});
 
-	useEffect(() => {
-		if (data) setUser(data);
-	}, [data]);
+	const login = (userData: AuthResult) => {
+		queryClient.setQueryData(["me"], userData);
+	};
 
-	const login = (user: AuthResult) => setUser(user);
-
-	const queryClient = useQueryClient();
 	const logout = () => {
-		setUser(null);
 		queryClient.removeQueries({ queryKey: ["me"] });
 	};
 
