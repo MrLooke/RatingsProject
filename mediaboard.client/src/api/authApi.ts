@@ -50,6 +50,13 @@ export const loginUser = async (request: LoginRequest): Promise<AuthResult> => {
 	return response.json();
 };
 
+export const logoutUser = async () => {
+	await fetch(`${apiUrl}/auth/logout`, {
+		method: "POST",
+		credentials: "include",
+	});
+};
+
 export const checkUser = async (): Promise<AuthResult> => {
 	const response = await fetch(`${apiUrl}/auth/me`, {
 		credentials: "include",

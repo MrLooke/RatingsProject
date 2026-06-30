@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace MediaBoard.Server.Controllers
 {
@@ -40,6 +41,14 @@ namespace MediaBoard.Server.Controllers
             });
 
             return Ok(user);
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("access_token");
+            return Ok();
         }
 
         [Authorize]
