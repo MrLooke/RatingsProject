@@ -31,6 +31,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<SearchRanking> SearchRankings { get; set; }
 
+    public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("pg_trgm");
@@ -228,6 +230,11 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.RankScore).HasColumnName("rank_score");
             entity.Property(e => e.TotalClicks).HasColumnName("total_clicks");
+        });
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.HasIndex(r => r.Token).IsUnique();
         });
 
         OnModelCreatingPartial(modelBuilder);

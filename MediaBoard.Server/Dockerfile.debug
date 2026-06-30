@@ -2,4 +2,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0
 WORKDIR /app
 RUN apt-get update && apt-get install -y unzip curl
 RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
 EXPOSE 8080
