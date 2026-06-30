@@ -49,3 +49,16 @@ export const loginUser = async (request: LoginRequest): Promise<AuthResult> => {
 
 	return response.json();
 };
+
+export const checkUser = async (): Promise<AuthResult> => {
+	const response = await fetch(`${apiUrl}/auth/me`, {
+		credentials: "include",
+	});
+
+	const data = await response.json();
+	if (!response.ok) {
+		throw new Error(data.error ?? "Error with authentication check.");
+	}
+
+	return data;
+};

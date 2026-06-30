@@ -1,5 +1,7 @@
 ﻿using MediaBoard.Server.Features.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace MediaBoard.Server.Controllers
 {
@@ -36,6 +38,19 @@ namespace MediaBoard.Server.Controllers
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddMinutes(15)
             });
+
+            return Ok(user);
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            LoginResult user = new LoginResult { 
+                UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new ArgumentNullException("Expected claim type id is null.")),
+                Username = User.FindFirstValue(ClaimTypes.Name) ?? throw new ArgumentNullException("Expected claim type username is null."),
+                Email = User.FindFirstValue(ClaimTypes.Email) ?? throw new ArgumentNullException("Expected claim type email is null.")
+            };
 
             return Ok(user);
         }
