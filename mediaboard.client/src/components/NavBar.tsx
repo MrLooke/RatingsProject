@@ -25,8 +25,8 @@ const NavBar = () => {
 		return () => document.removeEventListener("mousedown", handler);
 	}, []);
 
-	const handleLogout = () => {
-		logoutUser();
+	const handleLogout = async () => {
+		await logoutUser();
 		logout();
 		setOpen(false);
 		navigate({ to: "/" });

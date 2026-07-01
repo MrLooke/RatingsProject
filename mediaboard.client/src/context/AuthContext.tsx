@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	};
 
 	const logout = () => {
-		queryClient.removeQueries({ queryKey: ["me"] });
+		queryClient.setQueryData(["me"], null);
 	};
 
 	return (
