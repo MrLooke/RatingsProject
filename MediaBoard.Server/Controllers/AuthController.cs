@@ -1,8 +1,9 @@
-﻿using MediaBoard.Server.Features.Authentication;
-using Microsoft.AspNetCore.Mvc;
+﻿using MediaBoard.Server.Exceptions;
+using MediaBoard.Server.Features.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace MediaBoard.Server.Controllers
 {
@@ -12,10 +13,13 @@ namespace MediaBoard.Server.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IWebHostEnvironment _env;
-        public AuthController(IAuthService authService, IWebHostEnvironment env)
+        private readonly JwtSettings _jwtSettings;
+
+        public AuthController(IAuthService authService, IWebHostEnvironment env, IOptions<JwtSettings> jwtSettings)
         {
             _authService = authService;
             _env = env;
+            _jwtSettings = jwtSettings.Value;
         }
 
         [HttpPost("register")]
@@ -29,25 +33,60 @@ namespace MediaBoard.Server.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             LoginResult user = await _authService.LoginUserAsync(request);
-            string token = _authService.GenerateToken(user);
-        
 
-            Response.Cookies.Append("access_token", token, new CookieOptions
+            Response.Cookies.Append("access_token", user.AccessToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = !_env.IsDevelopment(),
                 SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddMinutes(15)
+                Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessExpiryMinutes)
             });
 
-            return Ok(user);
+            Response.Cookies.Append("refresh_token", user.RefreshToken, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = !_env.IsDevelopment(),
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays)
+            });
+
+            return Ok(new { user.UserId, user.Username, user.Email });
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            if(Request.Cookies.TryGetValue("refresh_token", out var refreshToken)) {
+                RefreshResult result = await _authService.RefreshAsync(refreshToken);
+
+                Response.Cookies.Append("access_token", result.AccessToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = !_env.IsDevelopment(),
+                    SameSite = SameSiteMode.Lax,
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessExpiryMinutes)
+                });
+            }
+            else
+            {
+                throw new UnauthorizedException("Refresh token not found.");
+            }
+
+            return Ok();
         }
 
         [Authorize]
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            if (Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
+            {
+                await _authService.LogoutAsync(refreshToken);
+            }
+
             Response.Cookies.Delete("access_token");
+            Response.Cookies.Delete("refresh_token");
+
             return Ok();
         }
 
@@ -55,10 +94,11 @@ namespace MediaBoard.Server.Controllers
         [HttpGet("me")]
         public IActionResult Me()
         {
-            LoginResult user = new LoginResult { 
-                UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new ArgumentNullException("Expected claim type id is null.")),
-                Username = User.FindFirstValue(ClaimTypes.Name) ?? throw new ArgumentNullException("Expected claim type username is null."),
-                Email = User.FindFirstValue(ClaimTypes.Email) ?? throw new ArgumentNullException("Expected claim type email is null.")
+            UserCheckResult user = new UserCheckResult
+            { 
+                UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UnauthorizedException("Expected claim type id is null.")),
+                Username = User.FindFirstValue(ClaimTypes.Name) ?? throw new UnauthorizedException("Expected claim type username is null."),
+                Email = User.FindFirstValue(ClaimTypes.Email) ?? throw new UnauthorizedException("Expected claim type email is null.")
             };
 
             return Ok(user);

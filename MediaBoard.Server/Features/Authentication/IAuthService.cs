@@ -8,6 +8,10 @@ namespace MediaBoard.Server.Features.Authentication
 
         Task<LoginResult> LoginUserAsync(LoginRequest request);
 
-        string GenerateToken(LoginResult user);
+        Task<RefreshResult> RefreshAsync(string refreshToken);
+
+        Task LogoutAsync(string refreshToken);
+
+        string GenerateToken(int userId, string username, string email);
     }
 }

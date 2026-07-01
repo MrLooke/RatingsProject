@@ -66,6 +66,8 @@ builder.Services.AddAuthentication()
         };
     });
 
+//Config Classes
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
 var app = builder.Build();
 
