@@ -15,14 +15,12 @@ namespace MediaBoard.Server.Features.Authentication
     {
         private readonly AppDbContext _dbContext;
         private readonly IPasswordHasher<AppUser> _passwordHasher;
-        private readonly IConfiguration _configuration;
         private readonly JwtSettings _jwtSettings;
 
-        public AuthService(AppDbContext dbContext, IPasswordHasher<AppUser> passwordHasher, IConfiguration config, IOptions<JwtSettings> jwtSettings)
+        public AuthService(AppDbContext dbContext, IPasswordHasher<AppUser> passwordHasher, IOptions<JwtSettings> jwtSettings)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
-            _configuration = config;
             _jwtSettings = jwtSettings.Value;
         }
 
@@ -117,7 +115,7 @@ namespace MediaBoard.Server.Features.Authentication
             string newRefreshToken = GenerateRefreshToken();
             RefreshToken newTokenRecord = new RefreshToken
             {
-                Token = refreshToken,
+                Token = newRefreshToken,
                 UserId = token.User.UserId,
                 CreatedAt = DateTime.UtcNow,
                 ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays)

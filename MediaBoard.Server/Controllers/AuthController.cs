@@ -11,6 +11,9 @@ namespace MediaBoard.Server.Controllers
     [Route("auth")]
     public class AuthController : ControllerBase
     {
+        private const string AccessTokenCookie = "access_token";
+        private const string RefreshTokenCookie = "refresh_token";
+
         private readonly IAuthService _authService;
         private readonly IWebHostEnvironment _env;
         private readonly JwtSettings _jwtSettings;
@@ -34,21 +37,9 @@ namespace MediaBoard.Server.Controllers
         {
             LoginResult user = await _authService.LoginUserAsync(request);
 
-            Response.Cookies.Append("access_token", user.AccessToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = !_env.IsDevelopment(),
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessExpiryMinutes)
-            });
+            Response.Cookies.Append(RefreshTokenCookie, user.RefreshToken, RefreshCookieOptions());
 
-            Response.Cookies.Append("refresh_token", user.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = !_env.IsDevelopment(),
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays)
-            });
+            Response.Cookies.Append(AccessTokenCookie, user.AccessToken, AccessCookieOptions());
 
             return Ok(new { user.UserId, user.Username, user.Email });
         }
@@ -56,24 +47,12 @@ namespace MediaBoard.Server.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh()
         {
-            if(Request.Cookies.TryGetValue("refresh_token", out var refreshToken)) {
+            if(Request.Cookies.TryGetValue(RefreshTokenCookie, out var refreshToken)) {
                 RefreshResult result = await _authService.RefreshAsync(refreshToken);
 
-                Response.Cookies.Append("refresh_token", result.RefreshToken, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = !_env.IsDevelopment(),
-                    SameSite = SameSiteMode.Lax,
-                    Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays)
-                });
+                Response.Cookies.Append(RefreshTokenCookie, result.RefreshToken, RefreshCookieOptions());
 
-                Response.Cookies.Append("access_token", result.AccessToken, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = !_env.IsDevelopment(),
-                    SameSite = SameSiteMode.Lax,
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessExpiryMinutes)
-                });
+                Response.Cookies.Append(AccessTokenCookie, result.AccessToken, AccessCookieOptions());
             }
             else
             {
@@ -87,13 +66,13 @@ namespace MediaBoard.Server.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            if (Request.Cookies.TryGetValue("refresh_token", out var refreshToken))
+            if (Request.Cookies.TryGetValue(RefreshTokenCookie, out var refreshToken))
             {
                 await _authService.LogoutAsync(refreshToken);
             }
 
-            Response.Cookies.Delete("access_token");
-            Response.Cookies.Delete("refresh_token");
+            Response.Cookies.Delete(AccessTokenCookie);
+            Response.Cookies.Delete(RefreshTokenCookie);
 
             return Ok();
         }
@@ -111,5 +90,21 @@ namespace MediaBoard.Server.Controllers
 
             return Ok(user);
         }
+
+        private CookieOptions AccessCookieOptions() => new CookieOptions()
+        {
+            HttpOnly = true,
+            Secure = !_env.IsDevelopment(),
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTimeOffset.UtcNow.AddMinutes(_jwtSettings.AccessExpiryMinutes)
+        };
+
+        private CookieOptions RefreshCookieOptions() => new CookieOptions()
+        {
+            HttpOnly = true,
+            Secure = !_env.IsDevelopment(),
+            SameSite = SameSiteMode.Lax,
+            Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays)
+        };
     }
 }
