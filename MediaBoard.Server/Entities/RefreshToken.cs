@@ -16,8 +16,6 @@ namespace MediaBoard.Server.Entities
 
         public DateTime ExpiresAt { get; set; }
 
-        public bool IsRevoked { get; set; }
-
         public virtual AppUser User { get; set; } = null!;
     }
 }

@@ -59,6 +59,14 @@ namespace MediaBoard.Server.Controllers
             if(Request.Cookies.TryGetValue("refresh_token", out var refreshToken)) {
                 RefreshResult result = await _authService.RefreshAsync(refreshToken);
 
+                Response.Cookies.Append("refresh_token", result.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = !_env.IsDevelopment(),
+                    SameSite = SameSiteMode.Lax,
+                    Expires = DateTimeOffset.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays)
+                });
+
                 Response.Cookies.Append("access_token", result.AccessToken, new CookieOptions
                 {
                     HttpOnly = true,

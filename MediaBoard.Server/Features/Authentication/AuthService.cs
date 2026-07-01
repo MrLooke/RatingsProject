@@ -82,8 +82,7 @@ namespace MediaBoard.Server.Features.Authentication
                 Token = refreshToken,
                 UserId = user.UserId,
                 CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays),
-                IsRevoked = false
+                ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays)
             };
 
             _dbContext.RefreshTokens.Add(tokenRecord);
@@ -107,14 +106,27 @@ namespace MediaBoard.Server.Features.Authentication
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(r => r.Token == refreshToken);
 
-            if(token == null || token.IsRevoked || DateTime.UtcNow > token.ExpiresAt)
+            if(token == null || DateTime.UtcNow > token.ExpiresAt)
             {
                 throw new UnauthorizedException("Invalid or expired refresh token.");
             }
 
-            var accessToken = GenerateToken(token.User.UserId, token.User.Username, token.User.Email);
+            _dbContext.RefreshTokens.Remove(token);
 
-            return new RefreshResult { AccessToken = accessToken };
+            var accessToken = GenerateToken(token.User.UserId, token.User.Username, token.User.Email);
+            string newRefreshToken = GenerateRefreshToken();
+            RefreshToken newTokenRecord = new RefreshToken
+            {
+                Token = refreshToken,
+                UserId = token.User.UserId,
+                CreatedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshExpiryDays)
+            };
+
+            _dbContext.RefreshTokens.Add(newTokenRecord);
+            await _dbContext.SaveChangesAsync();
+
+            return new RefreshResult { AccessToken = accessToken, RefreshToken = newRefreshToken };
         }
 
         public async Task LogoutAsync(string refreshToken)
@@ -123,7 +135,7 @@ namespace MediaBoard.Server.Features.Authentication
 
             if (token == null) return;
 
-            token.IsRevoked = true;
+            _dbContext.RefreshTokens.Remove(token);
             await _dbContext.SaveChangesAsync();
         }
 
