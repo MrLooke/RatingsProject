@@ -101,7 +101,40 @@ img {
 				color: var(--text-muted);
 			}
 		}
+
+		.albumFooter {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin: 8px 10px;
+		}
 	}
+}
+
+.rateButton {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	background: none;
+	border: var(--border-card);
+	border-radius: 6px;
+	color: var(--text-muted);
+	font-size: 0.8rem;
+	font-family: inherit;
+	cursor: pointer;
+	padding: 4px 10px;
+	transition: color 0.15s ease, background 0.15s ease;
+
+	&:hover {
+		color: var(--secondary);
+		background: var(--bg-dark);
+	}
+}
+
+.rateButtonIcon {
+	width: 14px;
+	height: 14px;
+	color: inherit;
 }
 
 .songList {
