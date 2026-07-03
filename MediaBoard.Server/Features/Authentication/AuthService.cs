@@ -137,7 +137,7 @@ namespace MediaBoard.Server.Features.Authentication
             await _dbContext.SaveChangesAsync();
         }
 
-        public string GenerateToken(int userId, string username, string email)
+        private string GenerateToken(int userId, string username, string email)
         {
             var claims = new[]
             {
@@ -159,7 +159,7 @@ namespace MediaBoard.Server.Features.Authentication
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GenerateRefreshToken()
+        private string GenerateRefreshToken()
         {
             var bytes = new byte[64];
             RandomNumberGenerator.Fill(bytes);

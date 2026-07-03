@@ -81,9 +81,13 @@ namespace MediaBoard.Server.Controllers
         [HttpGet("me")]
         public IActionResult Me()
         {
+            string userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UnauthorizedException("Expected claim type id is null.");
+            if (!int.TryParse(userIdString, out int userId))
+                throw new UnauthorizedException("Expected claim type id is invalid.");
+
             UserCheckResult user = new UserCheckResult
-            { 
-                UserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw new UnauthorizedException("Expected claim type id is null.")),
+            {
+                UserId = userId,
                 Username = User.FindFirstValue(ClaimTypes.Name) ?? throw new UnauthorizedException("Expected claim type username is null."),
                 Email = User.FindFirstValue(ClaimTypes.Email) ?? throw new UnauthorizedException("Expected claim type email is null.")
             };
