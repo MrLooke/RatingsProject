@@ -5,9 +5,6 @@ namespace MediaBoard.Server.Features.AlbumRating
     public class SaveRatingRequest
     {
         [Required]
-        public int UserId { get; set; }
-
-        [Required]
         public int AlbumId { get; set; }
 
         [Required]

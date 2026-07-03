@@ -3,10 +3,6 @@
 @port = 8080
 @baseUrl = http://{{host}}:{{port}}
 
-### Search Artist
-GET {{baseUrl}}/artist?query=Clairo&limit=15
-Accept: application/json
-
 ### Artist Details By ID
 GET {{baseUrl}}/artist/6512329
 Accept: application/json
@@ -18,5 +14,15 @@ Content-Type: application/json
   "UserId": 1,
   "AlbumId": 3540664,
   "Score": 8,
-  "Review": "Her best work yet."
+  "Review": "Her best work so far."
+}
+
+### Album Rating To Check Update (Not Dupe)
+PUT {{baseUrl}}/rating
+Content-Type: application/json
+{
+  "UserId": 1,
+  "AlbumId": 3540664,
+  "Score": 8,
+  "Review": "Her best work so far."
 }
