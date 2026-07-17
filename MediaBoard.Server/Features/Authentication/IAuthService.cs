@@ -1,6 +1,4 @@
-﻿using MediaBoard.Server.Entities;
-
-namespace MediaBoard.Server.Features.Authentication
+﻿namespace MediaBoard.Server.Features.Authentication
 {
     public interface IAuthService
     {
@@ -11,7 +9,5 @@ namespace MediaBoard.Server.Features.Authentication
         Task<RefreshResult> RefreshAsync(string refreshToken);
 
         Task LogoutAsync(string refreshToken);
-
-        string GenerateToken(int userId, string username, string email);
     }
 }
