@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
 :root {
 	--bg-dark: oklch(0.92 0.005 216);
 	--bg: oklch(0.96 0.005 216);
@@ -25,7 +27,8 @@
 	--heading: system-ui, "Segoe UI", Roboto, sans-serif;
 	--mono: ui-monospace, Consolas, monospace;
 
-	font: 18px/145% var(--inter);
+	font-family: var(--inter);
+	font: 18px/145%;
 	letter-spacing: 0.18px;
 	color-scheme: light dark;
 	color: var(--text);
@@ -51,8 +54,10 @@
 		--highlight: oklch(0.5 0.02 283);
 		--border: oklch(0.4 0.02 283);
 		--border-muted: oklch(0.3 0.02 283);
-		--primary-bold: oklch(0.4 0.13276 281.308);
-		--primary: oklch(0.8 0.10002 283.121);
+		--primary-muted-hover: oklch(0.21 0.03827 292.339);
+		--primary-muted: oklch(0.23 0.03827 292.339);
+		--primary-bold: oklch(34.768% 0.07036 288.912);
+		--primary: oklch(0.73 0.0894 291.405);
 		--secondary-dark: oklch(69.608% 0.112 103.011);
 		--secondary: oklch(0.76 0.1 103);
 		--danger: oklch(0.7 0.05 30);
@@ -104,4 +109,8 @@
 	display: flex;
 	flex-direction: column;
 	box-sizing: border-box;
+}
+
+body {
+	font-family: var(--inter);
 }
