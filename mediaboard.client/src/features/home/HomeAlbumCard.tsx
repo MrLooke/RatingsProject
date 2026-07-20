@@ -1,5 +1,4 @@
-import "@/App.css";
-import styles from "@/features/home/home.module.css";
+import styles from "./home.module.css";
 import ImageCard from "../../components/Cards/ImageCard";
 import RatingBadge from "@/components/RatingBadge";
 

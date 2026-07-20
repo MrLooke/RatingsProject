@@ -49,30 +49,44 @@
 
 		.albumGrid {
 			display: grid;
-			grid-template-columns: repeat(4, 200px);
-			overflow: hidden;
-			justify-content: space-between;
+			grid-template-columns: repeat(4, minmax(200px, 1fr));
+			/* overflow: hidden; */
+
+			gap: 10px;
 		}
 	}
 
 	.albumCard {
-		width: 200px;
-		height: 285px;
+		width: 100%;
 
 		.albumImgContainer {
 			width: 100%;
-			background-color: var(--primary);
+			height: auto;
+
+			aspect-ratio: 1 / 1;
+
+			background-color: var(--primary-muted);
+			border: 1px solid var(--primary-bold);
 			border-radius: 5px;
 
 			svg {
-				width: 100px;
-				height: 100px;
+				width: 80px;
+				height: 80px;
 				color: var(--primary-bold);
 			}
 		}
 
+		.albumImgContainer:hover {
+			background-color: var(--primary-muted-hover);
+			cursor: pointer;
+		}
+
 		h2 {
-			color: var(--primary);
+			color: var(--text);
+		}
+
+		h3 {
+			color: var(--text-muted);
 		}
 	}
 
@@ -96,7 +110,7 @@
 				width: 100%;
 
 				display: grid;
-				grid-template-columns: 50px 60px 1fr 50px;
+				grid-template-columns: 50px 90px 1fr 50px;
 				grid-template-rows: 40px 40px;
 
 				border-bottom: solid 1px var(--highlight);
@@ -107,8 +121,9 @@
 					grid-column: 1;
 					grid-row: span 2;
 
-					color: var(--text);
+					color: var(--text-muted);
 					font-weight: bold;
+					font-size: 1rem;
 
 					display: flex;
 					justify-content: center;
@@ -118,13 +133,15 @@
 				.artistImage {
 					grid-column: 2;
 					grid-row: span 2;
-					width: 36px;
-					height: 36px;
+					width: 56px;
+					height: 56px;
 					align-self: center;
 					justify-self: center;
-					border-radius: 8px;
 					overflow: hidden;
-					background-color: var(--primary);
+
+					background-color: var(--primary-muted);
+					border: 1px solid var(--primary-bold);
+					border-radius: 5px;
 
 					img {
 						object-fit: cover;
@@ -136,6 +153,7 @@
 						width: 60%;
 						height: 60%;
 						margin: 20%;
+						color: var(--primary);
 					}
 				}
 
@@ -143,12 +161,15 @@
 					display: contents;
 
 					h5 {
+						width: 100%;
+						height: 100%;
+
 						margin: 0;
 						padding: 0;
 
 						font-size: 1rem;
 						text-align: left;
-						line-height: 60px;
+						line-height: 55px;
 
 						grid-column: 3;
 						grid-row: 1;
@@ -168,6 +189,12 @@
 				.averageRating {
 					grid-column: 4;
 					grid-row: span 2;
+
+					margin: 0;
+					display: flex;
+					align-items: center;
+					font-size: 1rem;
+					color: var(--text-muted);
 				}
 			}
 		}

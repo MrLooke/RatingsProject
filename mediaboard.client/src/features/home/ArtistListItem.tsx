@@ -1,4 +1,4 @@
-import styles from "@/features/home/home.module.css";
+import styles from "./home.module.css";
 import ProfileImage from "@/components/ProfileImage";
 
 interface ArtistListItemProps {
@@ -31,7 +31,7 @@ const ArtistListItem = ({
 				</p>
 			</div>
 
-			<h6 className={styles.averageRating}>{averageRating}</h6>
+			<h6 className={styles.averageRating}>{averageRating.toFixed(1)}</h6>
 		</li>
 	);
 };
