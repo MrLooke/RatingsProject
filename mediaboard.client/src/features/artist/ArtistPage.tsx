@@ -1,5 +1,6 @@
 import styles from "@/features/artist/artist.module.css";
 import ClairoImg from "@/assets/Clairo.jpg";
+import ProfileImage from "@/components/ProfileImage";
 import FullAlbumCard from "./FullAlbumCard";
 import SongListItem from "./SongListItem";
 import useArtistPage from "@/hooks/api/useArtistPage";
@@ -93,8 +94,12 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 
 	return (
 		<div className={styles.artistBody}>
-			{/* <img src={ClairoImg} /> */}
-			<img src={ClairoImg} />
+			<ProfileImage
+				src={ClairoImg}
+				alt={cleanArtistName + " artist image."}
+				className={styles.artistImage}
+			/>
+
 			<h1 className={styles.artistName}>{cleanArtistName}</h1>
 
 			{data.description && (

@@ -3,6 +3,7 @@ import Star from "@/assets/star.svg?react";
 import styles from "@/features/artist/artist.module.css";
 import Card from "@/components/Cards/Card";
 import ImageWithDefault from "@/components/ImageWithDefault";
+import DefaultAlbumCover from "@/assets/music-album.svg?react";
 import { useAuth } from "@/context/AuthContext";
 import RatingDialog from "./RatingDialog";
 
@@ -29,7 +30,9 @@ const FullAlbumCard = ({
 					containerClass={styles.imageContainer}
 					src={imageSource}
 					alt={title + "Cover Image/Art"}
-				/>
+				>
+					<DefaultAlbumCover />
+				</ImageWithDefault>
 
 				<div className={styles.info}>
 					<div className={styles.headers}>

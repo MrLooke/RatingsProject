@@ -5,6 +5,7 @@ import { useState } from "react";
 interface ImageDefaultProps extends React.HTMLAttributes<HTMLDivElement> {
 	src?: string | null;
 	alt?: string;
+	children: React.ReactNode;
 	containerClass?: string;
 }
 

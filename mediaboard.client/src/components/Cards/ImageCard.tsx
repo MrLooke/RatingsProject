@@ -1,5 +1,6 @@
 import styles from "@/components/components.module.css";
 import ImageWithDefault from "../ImageWithDefault";
+import DefaultAlbumCover from "@/assets/music-album.svg?react";
 
 interface ImageCardProps extends React.HTMLAttributes<HTMLDivElement> {
 	header: string;
@@ -24,7 +25,9 @@ const ImageCard = ({
 				src={imageSource}
 				alt={title + " Cover Image"}
 				containerClass={imageContainerClass}
-			/>
+			>
+				<DefaultAlbumCover />
+			</ImageWithDefault>
 			<div className={styles.footer}>
 				<h2>{title}</h2>
 				<h3>{artist}</h3>
