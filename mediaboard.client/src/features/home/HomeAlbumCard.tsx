@@ -7,6 +7,7 @@ interface HomeAlbumCardProps {
 	artist: string;
 	rating: number;
 }
+
 const HomeAlbumCard = ({ title, artist, rating }: HomeAlbumCardProps) => {
 	return (
 		<ImageCard
