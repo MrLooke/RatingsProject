@@ -74,15 +74,13 @@
 }
 
 .baseCard {
-	border: var(--border-card);
-	border-top: solid 1px var(--highlight);
+	border: 1px solid var(--border-muted);
 	border-radius: 10px;
-	background: var(--gradient);
-	box-shadow: var(--shadow);
+	background: var(--bg);
 }
 
 .baseCard:hover {
-	background: var(--gradient-hover);
+	background: var(--bg-light);
 }
 
 .defaultImageContainer {

@@ -93,6 +93,7 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 
 	return (
 		<div className={styles.artistBody}>
+			{/* <img src={ClairoImg} /> */}
 			<img src={ClairoImg} />
 			<h1 className={styles.artistName}>{cleanArtistName}</h1>
 
@@ -100,6 +101,7 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 				<p className={styles.description}>{data.description}</p>
 			)}
 
+			<h2 className={styles.albumHeader}>ALBUMS</h2>
 			<div className={styles.albums}>
 				{data?.albums.map((album) => (
 					<FullAlbumCard
