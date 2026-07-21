@@ -1,21 +1,21 @@
 .searchContainer {
-	width: 350px;
-	margin-left: 25px;
-	margin-right: 5px;
+	position: relative;
 }
 
 .searchInput {
-	height: 50px;
+	height: 46px;
 	width: 100%;
+	font-size: 1.25rem;
 }
 
 .resultsContainer {
 	box-sizing: border-box;
 	padding: 5px;
 	position: absolute;
-	width: inherit;
 	height: 200px;
-	top: 85px;
+	top: 60px;
+	left: 0;
+	right: 0;
 	overflow-y: scroll;
 	overflow-x: hidden;
 
@@ -31,7 +31,6 @@
 	list-style: none;
 	border-radius: 10px;
 	background-color: var(--bg-light);
-
 	display: flex;
 	align-items: center;
 
@@ -41,7 +40,8 @@
 		margin-left: 20px;
 		text-align: left;
 		vertical-align: middle;
-		font-weight: 100;
+		font-weight: 300;
+		color: var(--text);
 
 		overflow: hidden;
 		text-overflow: ellipsis;

@@ -35,7 +35,7 @@ const NavBar = () => {
 	return (
 		<nav>
 			<h3>MusicBoard</h3>
-			<SearchBar />
+			<SearchBar className={styles.navSearch} />
 			<ul>
 				<Link to="/">Home</Link>
 			</ul>

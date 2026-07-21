@@ -55,33 +55,11 @@
 	height: 80px;
 }
 
-nav {
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	padding: 10px 0px;
-	background: var(--bg);
-
-	a {
-		text-align: center;
-		text-decoration: none;
-		color: var(--text);
-	}
-
-	ul {
-		font-size: 1.2rem;
-		text-align: center;
-		margin: 0;
-		padding: 10px 20px;
-	}
-}
-
 .baseTextInput {
 	box-sizing: border-box;
 	background-color: var(--bg-light);
-	border-radius: 20px;
-	border: 2px solid var(--bg-light);
+	border-radius: 10px;
+	border: 2px solid var(--border);
 	outline: none;
 
 	color: var(--text);

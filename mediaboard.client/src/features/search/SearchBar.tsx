@@ -4,7 +4,7 @@ import InputText from "@/components/InputText";
 import SearchResults from "./SearchResults";
 import styles from "@/features/search/search.module.css";
 
-const SearchBar = () => {
+const SearchBar = ({ className = "" }: { className?: string }) => {
 	const [query, setQuery] = useState("");
 	const [isFocused, setIsFocused] = useState(false);
 	const debouncedQuery = useDebounce(query, 300);
@@ -14,7 +14,7 @@ const SearchBar = () => {
 	};
 
 	return (
-		<div className={styles.searchContainer}>
+		<div className={`${styles.searchContainer} ${className}`}>
 			<InputText
 				className={styles.searchInput}
 				onEnterPress={handleQuerySubmit}

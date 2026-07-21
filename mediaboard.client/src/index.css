@@ -66,6 +66,7 @@
 		--info: oklch(0.7 0.05 260);
 
 		--border-card: 1px solid var(--border);
+		--gradient-dark: var(--bg-dark) 90%, var(--bg);
 		--gradient: linear-gradient(0deg, var(--bg) 90%, var(--bg-light));
 		--gradient-hover: linear-gradient(0deg, var(--bg), var(--bg-light));
 
