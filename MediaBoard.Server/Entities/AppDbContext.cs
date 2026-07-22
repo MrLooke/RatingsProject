@@ -49,6 +49,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.ImageUrl).HasColumnName("image_url");
             entity.Property(e => e.MainId).HasColumnName("main_id");
             entity.Property(e => e.Title).HasColumnName("title");
+            entity.Property(e => e.Format).HasColumnName("format").HasMaxLength(50);
             entity.Property(e => e.Year).HasColumnName("year");
 
             entity.HasMany(d => d.Artists).WithMany(p => p.Albums)

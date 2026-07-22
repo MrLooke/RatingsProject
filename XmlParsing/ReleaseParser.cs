@@ -74,7 +74,7 @@ namespace XmlParsing
             bool insideFormats = false;
             try
             {
-                while (xmlReader.Read() && fileNumber < 10)
+                while (xmlReader.Read())
                 {
                     ReleaseFormat format = new ReleaseFormat();
 
@@ -157,7 +157,7 @@ namespace XmlParsing
                 {
                     csvWriter.Flush();
                     csvWriter.Dispose();
-                    Console.WriteLine("AlbumWriter safely closed.");
+                    Console.WriteLine("ReleaseWriter safely closed.");
                 }
             }
         }

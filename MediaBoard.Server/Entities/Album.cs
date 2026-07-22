@@ -13,6 +13,8 @@ public partial class Album
 
     public int? Year { get; set; }
 
+    public string? Format { get; set;  }
+
     public string? ImageUrl { get; set; }
 
     public virtual ICollection<Artist> Artists { get; set; } = new List<Artist>();
