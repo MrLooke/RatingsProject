@@ -1,6 +1,6 @@
-# MediaBoard
+# TuneBugged
 
-MediaBoard is a full-stack music album rating application built as a hands-on learning project covering full-stack development, containerization, authentication, and database design at scale. Album, artist, and format data is sourced from real-world [Discogs](https://www.discogs.com/) XML data dumps.
+TuneBugged is a full-stack music album rating application built as a hands-on learning project covering full-stack development, containerization, authentication, and database design at scale. Album, artist, and format data is sourced from real-world [Discogs](https://www.discogs.com/) XML data dumps.
 
 ---
 
@@ -22,7 +22,7 @@ MediaBoard is a full-stack music album rating application built as a hands-on le
 This project exists primarily as a learning vehicle. Areas of active focus include:
 
 - Full stack application development end to end
-- Docker & Kubernetes
+- Docker
 - Low-level and system design
 - PostgreSQL performance and optimization
 - .NET / ASP.NET Core internals
@@ -110,7 +110,7 @@ The frontend, API, and PostgreSQL database will all be running as separate conta
 
 ## Roadmap
 
-1. ~~Parse Discogs releases dump → backfill `format` column on masters table~~
+1. ~Parse Discogs releases dump → backfill `format` column on masters table~
 2. Album ratings frontend
 3. Track import from releases dump; establish album → track relationship
 4. Song ratings with auto-aggregate to album score + manual override
