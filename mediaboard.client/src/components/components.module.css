@@ -55,6 +55,45 @@
 	height: 80px;
 }
 
+.expandableDiv {
+	position: relative;
+
+	p {
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+
+	button {
+		position: absolute;
+		left: 0;
+		bottom: -10px;
+	}
+}
+
+.clampedText {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+
+.expandedText {
+	display: block;
+
+	p {
+		all: unset;
+	}
+}
+
+.expandButton {
+	all: unset;
+	cursor: pointer;
+	font-weight: 300;
+
+	&:hover {
+		color: var(--text);
+	}
+}
+
 .baseTextInput {
 	box-sizing: border-box;
 	background-color: var(--bg-light);

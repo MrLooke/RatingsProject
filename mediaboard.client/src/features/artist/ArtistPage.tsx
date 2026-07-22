@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "@/features/artist/artist.module.css";
 import ClairoImg from "@/assets/Clairo.jpg";
 import ProfileImage from "@/components/ProfileImage";
+import ExpandableText from "@/components/ExpandableText";
 import FullAlbumCard from "./FullAlbumCard";
 import SongListItem from "./SongListItem";
 import useArtistPage from "@/hooks/api/useArtistPage";
@@ -115,8 +116,14 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 
 			<h1 className={styles.artistName}>{cleanArtistName}</h1>
 
-			{data.description && (
+			{/* {data.description && (
 				<p className={styles.description}>{data.description}</p>
+			)} */}
+
+			{data.description && (
+				<ExpandableText className={styles.description} lineClamp={5}>
+					<p>{data.description}</p>
+				</ExpandableText>
 			)}
 
 			<div className={styles.formatHeaders}>
