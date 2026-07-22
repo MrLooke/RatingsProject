@@ -117,14 +117,15 @@ The frontend, API, and PostgreSQL database will all be running as separate conta
 5. Full album rating flow (per-song ratings → aggregated score)
 6. Expand search to albums and songs
 7. Update GIN index strategy for albums and songs
-8. Search UI distinction (labels or tabs for artists/albums/songs)
-9. Album lists (private/public)
-10. Artist groups (private/public)
-11. Backend unit testing
-12. Backend integration testing
-13. Frontend unit testing (React)
-14. Azure deployment (AKS or App Service + Azure Database for PostgreSQL)
-15. CI/CD pipeline (GitHub Actions or Azure DevOps)
+8. Update Home Page + Data Population
+9. Search UI distinction (labels or tabs for artists/albums/songs)
+10. Album lists (private/public)
+11. Artist groups (private/public)
+12. Backend unit testing
+13. Backend integration testing
+14. Frontend unit testing (React)
+15. Azure deployment (AKS or App Service + Azure Database for PostgreSQL)
+16. CI/CD pipeline (GitHub Actions or Azure DevOps)
 
 **Ongoing:** Database optimization pass — indexes, denormalization, and materialized views — deferred until the application reaches a stable feature set. The album → track join is a known candidate for denormalization once track data is imported.
 
