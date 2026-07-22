@@ -116,6 +116,7 @@
 
 	.imageContainer {
 		width: 90px;
+		min-width: 90px;
 		height: 90px;
 
 		border: 1px solid var(--primary-bold);
@@ -142,6 +143,7 @@
 	.info {
 		height: 100%;
 		flex-grow: 1;
+		min-width: 0;
 		margin-left: 15px;
 
 		.headers {
@@ -158,6 +160,9 @@
 				height: 40px;
 				font-weight: 400;
 				font-size: 1.25rem;
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
 			}
 
 			p {

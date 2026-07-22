@@ -106,6 +106,13 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 
 	const cleanArtistName = data.name.replace(/\s*\(\d+\)$/, "");
 
+	const hasAlbums = data.albums.length > 0;
+	const availableFormats = FORMAT_HEADERS.filter(
+		(header) =>
+			header === "ALL" ||
+			data.albums.some((album) => FORMAT_FILTERS[header](album.format)),
+	);
+
 	return (
 		<div className={styles.artistBody}>
 			<div className={styles.mainColumn}>
@@ -120,24 +127,30 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 					</ExpandableText>
 				)}
 
-				<div className={styles.formatHeaders}>
-					{FORMAT_HEADERS.flatMap((header, i) => [
-						<h2
-							key={header}
-							className={
-								selectedFormat === header
-									? styles.active
-									: undefined
-							}
-							onClick={() => setSelectedFormat(header)}
-						>
-							{header}
-						</h2>,
-						i < FORMAT_HEADERS.length - 1 ? (
-							<h3 key={`${header}-separator`}>|</h3>
-						) : null,
-					])}
-				</div>
+				{hasAlbums ? (
+					<div className={styles.formatHeaders}>
+						{availableFormats.flatMap((header, i) => [
+							<h2
+								key={header}
+								className={
+									selectedFormat === header
+										? styles.active
+										: undefined
+								}
+								onClick={() => setSelectedFormat(header)}
+							>
+								{header}
+							</h2>,
+							i < availableFormats.length - 1 ? (
+								<h3 key={`${header}-separator`}>|</h3>
+							) : null,
+						])}
+					</div>
+				) : (
+					<div className={styles.artistBodyMessage}>
+						No releases yet.
+					</div>
+				)}
 
 				<div>
 					{data?.albums
