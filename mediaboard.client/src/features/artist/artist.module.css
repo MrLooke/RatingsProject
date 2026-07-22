@@ -53,8 +53,8 @@
 }
 
 .artistName {
-	margin: 0;
-	margin-bottom: 10px;
+	height: 90px;
+	margin: 10px 0;
 	font-size: 5rem;
 	font-weight: normal;
 
