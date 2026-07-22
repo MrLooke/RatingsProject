@@ -1,9 +1,21 @@
+import { useState } from "react";
 import styles from "@/features/artist/artist.module.css";
 import ClairoImg from "@/assets/Clairo.jpg";
 import ProfileImage from "@/components/ProfileImage";
 import FullAlbumCard from "./FullAlbumCard";
 import SongListItem from "./SongListItem";
 import useArtistPage from "@/hooks/api/useArtistPage";
+
+const FORMAT_FILTERS: Record<string, (format?: string | null) => boolean> = {
+	ALL: () => true,
+	ALBUMS: (format) => format === "Album",
+	COMPILATIONS: (format) => format == "Compilation",
+	EPS: (format) => format === "EP",
+	SINGLES: (format) => format === "Single",
+	MISC: (format) => !["Album", "EP", "Single"].includes(format ?? ""),
+};
+
+const FORMAT_HEADERS = Object.keys(FORMAT_FILTERS);
 
 const songData = [
 	{
@@ -70,6 +82,7 @@ const songData = [
 
 const ArtistPage = ({ artistId }: { artistId: number }) => {
 	const { data, error, isPending, isError } = useArtistPage(artistId);
+	const [selectedFormat, setSelectedFormat] = useState("ALL");
 
 	if (artistId == null) {
 		return (
@@ -107,27 +120,38 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 			)}
 
 			<div className={styles.formatHeaders}>
-				<h2>ALL</h2>
-				<h3>|</h3>
-				<h2>ALBUMS</h2>
-				<h3>|</h3>
-				<h2>EPS</h2>
-				<h3>|</h3>
-				<h2>SINGLES</h2>
-				<h3>|</h3>
-				<h2>MISC</h2>
+				{FORMAT_HEADERS.flatMap((header, i) => [
+					<h2
+						key={header}
+						className={
+							selectedFormat === header
+								? styles.active
+								: undefined
+						}
+						onClick={() => setSelectedFormat(header)}
+					>
+						{header}
+					</h2>,
+					i < FORMAT_HEADERS.length - 1 ? (
+						<h3 key={`${header}-separator`}>|</h3>
+					) : null,
+				])}
 			</div>
 
 			<div className={styles.albums}>
-				{data?.albums.map((album) => (
-					<FullAlbumCard
-						key={album.id}
-						albumId={album.id}
-						title={album.title}
-						year={album.year?.toString()}
-						format={album.format}
-					/>
-				))}
+				{data?.albums
+					.filter((album) =>
+						FORMAT_FILTERS[selectedFormat](album.format),
+					)
+					.map((album) => (
+						<FullAlbumCard
+							key={album.id}
+							albumId={album.id}
+							title={album.title}
+							year={album.year?.toString()}
+							format={album.format}
+						/>
+					))}
 			</div>
 			<div className={styles.songList}>
 				<h2>Popular Songs</h2>
