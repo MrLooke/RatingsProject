@@ -106,7 +106,18 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 				<p className={styles.description}>{data.description}</p>
 			)}
 
-			<h2 className={styles.albumHeader}>ALBUMS</h2>
+			<div className={styles.formatHeaders}>
+				<h2>ALL</h2>
+				<h3>|</h3>
+				<h2>ALBUMS</h2>
+				<h3>|</h3>
+				<h2>EPS</h2>
+				<h3>|</h3>
+				<h2>SINGLES</h2>
+				<h3>|</h3>
+				<h2>MISC</h2>
+			</div>
+
 			<div className={styles.albums}>
 				{data?.albums.map((album) => (
 					<FullAlbumCard
