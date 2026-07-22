@@ -1,7 +1,6 @@
 ﻿using System.IO.Compression;
 using System.Text;
 using System.Xml;
-using static XmlReaders.MastersParsers;
 
 namespace XmlParsing
 {
@@ -14,6 +13,8 @@ namespace XmlParsing
             public int MainId { get; set; }
 
             public string Format { get; set; } = "";
+
+            public string Title { get; set; } = "";
 
             public List<string> Descriptions = new();
         }
@@ -54,11 +55,87 @@ namespace XmlParsing
             }
         }
 
+        public static void InspectionForArtist(string xmlZipPath, string artistName, string outputPath)
+        {
+            using FileStream fileStream = File.OpenRead(xmlZipPath);
+            using GZipStream gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using XmlReader reader = XmlReader.Create(gzipStream, new XmlReaderSettings
+            {
+                IgnoreWhitespace = true,
+                IgnoreComments = true
+            });
+
+            var outputSettings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "  "
+            };
+
+            using XmlWriter writer = XmlWriter.Create(outputPath, outputSettings);
+            writer.WriteStartDocument();
+            writer.WriteStartElement("releases");
+
+            int matchCount = 0;
+
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.Element && reader.Name == "release")
+                {
+                    string releaseXml = reader.ReadOuterXml();
+
+                    if (ReleaseContainsArtist(releaseXml, artistName))
+                    {
+                        // Re-read the captured fragment and write it into the output document
+                        using XmlReader fragmentReader = XmlReader.Create(
+                            new StringReader(releaseXml),
+                            new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment });
+
+                        writer.WriteNode(fragmentReader, defattr: true);
+                        matchCount++;
+                    }
+                }
+            }
+
+            writer.WriteEndElement(); // </releases>
+            writer.WriteEndDocument();
+
+            Console.WriteLine($"Exported {matchCount} releases for '{artistName}' to {outputPath}");
+        }
+
+        private static bool ReleaseContainsArtist(string releaseXml, string artistName)
+        {
+            using XmlReader releaseReader = XmlReader.Create(new StringReader(releaseXml));
+
+            bool insideArtists = false;
+
+            while (releaseReader.Read())
+            {
+                if (releaseReader.NodeType == XmlNodeType.Element && releaseReader.Name == "artists")
+                    insideArtists = true;
+
+                if (releaseReader.NodeType == XmlNodeType.EndElement && releaseReader.Name == "artists")
+                    insideArtists = false;
+
+                if (insideArtists
+                    && releaseReader.NodeType == XmlNodeType.Element
+                    && releaseReader.Name == "name")
+                {
+                    string name = releaseReader.ReadElementContentAsString();
+                    if (string.Equals(name, artistName, StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         public static void ReleasesToCsv(string xmlZipPath, string csvFileName)
         {
             int fileNumber = 1;
             int count = 0;
             int batchSize = 100000;
+            HashSet<int> seen = new HashSet<int>(2000000);
+
             const string headers = "Id,MainId,Format";
 
             StreamWriter csvWriter = new StreamWriter($"{csvFileName}_{fileNumber}.csv", false, Encoding.UTF8);
@@ -97,8 +174,7 @@ namespace XmlParsing
                             }
 
 
-                            if (innerReader.NodeType != XmlNodeType.Element
-                                || (innerReader.Name == "master_id" && innerReader.GetAttribute("is_main_release") != "true"))
+                            if (innerReader.NodeType != XmlNodeType.Element)
                             {
                                 innerReader.Skip();
                                 continue;
@@ -108,9 +184,18 @@ namespace XmlParsing
                             {
                                 Helpers.ParseIntAndSet(innerReader.ReadString(), (val) => format.MainId = val);
                             }
-                            
-                           
-                            if(insideFormats && innerReader.Name == "description")
+
+                            if (innerReader.Name == "title")
+                            {
+                                string title = innerReader.ReadString() ?? "";
+                                if(!string.IsNullOrEmpty(title))
+                                {
+                                    format.Title = title;
+                                }
+                            }
+
+
+                            if (insideFormats && innerReader.Name == "description")
                             {
                                 string desc = innerReader.ReadString() ?? "";
                                 if (!string.IsNullOrEmpty(desc))
@@ -123,9 +208,12 @@ namespace XmlParsing
 
                     if (format.Id != 0 && format.MainId != 0 && format.Descriptions.Count > 0)
                     {
+                        if (seen.Contains(format.MainId)) continue;
+
                         format.Format = NormalizeFormat(format.Descriptions) ?? "";
 
                         if (string.IsNullOrEmpty(format.Format)) continue;
+                        seen.Add(format.MainId);
 
                         csvWriter.WriteLine($"{format.Id},{format.MainId},\"{format.Format}\"");
                         count++;

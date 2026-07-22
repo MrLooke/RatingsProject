@@ -27,11 +27,12 @@ async Task ImportFormatsIntoAlbumTable()
             UPDATE album a
             SET format = t.format
             FROM {tempTable} t
-            WHERE a.id = t.main_id;
+            WHERE a.id = t.main_id 
+            AND a.format IS NULL;
         ", connection);
-        await updateActualFromTemp.ExecuteReaderAsync();
+        await updateActualFromTemp.ExecuteNonQueryAsync();
     }
-    catch
+    finally
     {
         await using var dropTempCmd = new NpgsqlCommand($"DROP TABLE IF EXISTS {tempTable};", connection);
         await dropTempCmd.ExecuteNonQueryAsync();

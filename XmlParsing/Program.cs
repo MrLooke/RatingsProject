@@ -12,7 +12,7 @@ if (!Directory.Exists("Exports/releases/"))
     Directory.CreateDirectory("Exports/releases/");
 }
 
-//ReleaseParser.Inspection("./XmlFiles/releases.xml.gz");
+//ReleaseParser.InspectionForArtist("./XmlFiles/releases.xml.gz", "Clairo (2)", "clairo_releases.xml");
 ReleaseParser.ReleasesToCsv("./XmlFiles/releases.xml.gz", "Exports/releases/releases");
 
 if (!Directory.Exists("Exports/albums/"))

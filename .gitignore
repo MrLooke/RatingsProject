@@ -374,3 +374,5 @@ appsettings.json
 # Dump files
 *.dump
 /MediaBoard.Server/Features/Authentication/AuthTest.http
+/XmlParsing/clairo_releases.xml
+/XmlParsing/Properties/launchSettings.json
