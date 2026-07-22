@@ -6,6 +6,7 @@ import ExpandableText from "@/components/ExpandableText";
 import FullAlbumCard from "./FullAlbumCard";
 import SongListItem from "./SongListItem";
 import useArtistPage from "@/hooks/api/useArtistPage";
+import { mockPopularSongs } from "@/mock/songData";
 
 const FORMAT_FILTERS: Record<string, (format?: string | null) => boolean> = {
 	ALL: () => true,
@@ -17,69 +18,6 @@ const FORMAT_FILTERS: Record<string, (format?: string | null) => boolean> = {
 };
 
 const FORMAT_HEADERS = Object.keys(FORMAT_FILTERS);
-
-const songData = [
-	{
-		id: "song_01",
-		title: "Sofia",
-		album: "Immunity",
-		rating: 4.9,
-	},
-	{
-		id: "song_02",
-		title: "Bags",
-		album: "Immunity",
-		rating: 4.8,
-	},
-	{
-		id: "song_03",
-		title: "Pretty Girl",
-		album: "diary 001",
-		rating: 4.7,
-	},
-	{
-		id: "song_04",
-		title: "Juna",
-		album: "Charm",
-		rating: 4.6,
-	},
-	{
-		id: "song_05",
-		title: "Sexy to Someone",
-		album: "Charm",
-		rating: 4.5,
-	},
-	{
-		id: "song_06",
-		title: "Amoeba",
-		album: "Sling",
-		rating: 4.4,
-	},
-	{
-		id: "song_07",
-		title: "Flaming Hot Cheetos",
-		album: "diary 001",
-		rating: 4.3,
-	},
-	{
-		id: "song_08",
-		title: "Blouse",
-		album: "Sling",
-		rating: 4.2,
-	},
-	{
-		id: "song_09",
-		title: "4EVER",
-		album: "Single",
-		rating: 4.6,
-	},
-	{
-		id: "song_10",
-		title: "Bubble Gum",
-		album: "Single",
-		rating: 4.3,
-	},
-];
 
 const ArtistPage = ({ artistId }: { artistId: number }) => {
 	const { data, error, isPending, isError } = useArtistPage(artistId);
@@ -179,7 +117,7 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 
 				<div className={styles.songList}>
 					<h2>Popular Songs</h2>
-					{songData
+					{mockPopularSongs
 						.sort((a, b) => b.rating - a.rating)
 						.map((song) => (
 							<SongListItem key={song.id} {...song} />
