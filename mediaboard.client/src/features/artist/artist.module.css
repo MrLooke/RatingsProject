@@ -2,8 +2,7 @@
 	width: 100%;
 	display: grid;
 	grid-template-columns: 30px repeat(9, 1fr) 30px;
-	grid-template-rows: repeat(24, 50px);
-	row-gap: 5px;
+	align-items: start;
 }
 
 .artistBodyMessage {
@@ -12,12 +11,26 @@
 	color: var(--info);
 }
 
+.mainColumn {
+	grid-column: 2/9;
+	grid-row: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar {
+	grid-column: 10/11;
+	grid-row: 1;
+	display: grid;
+	grid-template-rows: repeat(24, 50px);
+	row-gap: 5px;
+}
+
 .artistImage {
 	width: 300px;
 	height: 300px;
 	object-fit: contain;
 	grid-row: 2;
-	grid-column: 10;
 	border-radius: 12px;
 	background-color: var(--primary-muted);
 	color: var(--primary-bold);
@@ -36,17 +49,15 @@
 }
 
 .ratings {
-	grid-column: 10/11;
 	grid-row: 7/11;
 }
 
 .artistName {
 	margin: 0;
+	margin-bottom: 10px;
 	font-size: 5rem;
 	font-weight: normal;
 
-	grid-column: 2/9;
-	grid-row: 2/4;
 	text-align: left;
 	line-height: 100%;
 	overflow: hidden;
@@ -55,8 +66,7 @@
 
 .description {
 	margin: 0;
-	grid-column: 2/8;
-	grid-row: 4/8;
+	margin-bottom: 20px;
 	text-align: left;
 	color: var(--text-muted);
 
@@ -64,8 +74,9 @@
 }
 
 .formatHeaders {
-	grid-column: 2 / 5;
-	grid-row: 8 / 9;
+	width: 45%;
+	margin-bottom: 15px;
+	align-self: flex-start;
 
 	display: flex;
 	justify-content: space-between;
@@ -93,12 +104,6 @@
 		margin: 0px 10px;
 		color: var(--text-muted);
 	}
-}
-
-.albums {
-	grid-column: 2/8;
-	grid-row: 9;
-	grid-auto-rows: auto;
 }
 
 .albumCard {
@@ -205,9 +210,7 @@
 	background: var(--bg);
 	border: 1px solid var(--border-muted);
 	border-radius: 10px;
-	grid-column: 10/11;
 	grid-row: 8;
-	grid-auto-rows: auto;
 }
 
 .songItem {

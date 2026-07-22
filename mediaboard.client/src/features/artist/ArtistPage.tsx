@@ -108,65 +108,69 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 
 	return (
 		<div className={styles.artistBody}>
-			<ProfileImage
-				src={ClairoImg}
-				alt={cleanArtistName + " artist image."}
-				className={styles.artistImage}
-			/>
+			<div className={styles.mainColumn}>
+				<h1 className={styles.artistName}>{cleanArtistName}</h1>
 
-			<h1 className={styles.artistName}>{cleanArtistName}</h1>
-
-			{/* {data.description && (
-				<p className={styles.description}>{data.description}</p>
-			)} */}
-
-			{data.description && (
-				<ExpandableText className={styles.description} lineClamp={5}>
-					<p>{data.description}</p>
-				</ExpandableText>
-			)}
-
-			<div className={styles.formatHeaders}>
-				{FORMAT_HEADERS.flatMap((header, i) => [
-					<h2
-						key={header}
-						className={
-							selectedFormat === header
-								? styles.active
-								: undefined
-						}
-						onClick={() => setSelectedFormat(header)}
+				{data.description && (
+					<ExpandableText
+						className={styles.description}
+						lineClamp={5}
 					>
-						{header}
-					</h2>,
-					i < FORMAT_HEADERS.length - 1 ? (
-						<h3 key={`${header}-separator`}>|</h3>
-					) : null,
-				])}
+						<p>{data.description}</p>
+					</ExpandableText>
+				)}
+
+				<div className={styles.formatHeaders}>
+					{FORMAT_HEADERS.flatMap((header, i) => [
+						<h2
+							key={header}
+							className={
+								selectedFormat === header
+									? styles.active
+									: undefined
+							}
+							onClick={() => setSelectedFormat(header)}
+						>
+							{header}
+						</h2>,
+						i < FORMAT_HEADERS.length - 1 ? (
+							<h3 key={`${header}-separator`}>|</h3>
+						) : null,
+					])}
+				</div>
+
+				<div>
+					{data?.albums
+						.filter((album) =>
+							FORMAT_FILTERS[selectedFormat](album.format),
+						)
+						.map((album) => (
+							<FullAlbumCard
+								key={album.id}
+								albumId={album.id}
+								title={album.title}
+								year={album.year?.toString()}
+								format={album.format}
+							/>
+						))}
+				</div>
 			</div>
 
-			<div className={styles.albums}>
-				{data?.albums
-					.filter((album) =>
-						FORMAT_FILTERS[selectedFormat](album.format),
-					)
-					.map((album) => (
-						<FullAlbumCard
-							key={album.id}
-							albumId={album.id}
-							title={album.title}
-							year={album.year?.toString()}
-							format={album.format}
-						/>
-					))}
-			</div>
-			<div className={styles.songList}>
-				<h2>Popular Songs</h2>
-				{songData
-					.sort((a, b) => b.rating - a.rating)
-					.map((song) => (
-						<SongListItem key={song.id} {...song} />
-					))}
+			<div className={styles.sidebar}>
+				<ProfileImage
+					src={ClairoImg}
+					alt={cleanArtistName + " artist image."}
+					className={styles.artistImage}
+				/>
+
+				<div className={styles.songList}>
+					<h2>Popular Songs</h2>
+					{songData
+						.sort((a, b) => b.rating - a.rating)
+						.map((song) => (
+							<SongListItem key={song.id} {...song} />
+						))}
+				</div>
 			</div>
 		</div>
 	);
