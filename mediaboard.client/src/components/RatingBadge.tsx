@@ -3,14 +3,15 @@ import Star from "@/assets/star.svg?react";
 
 interface RatingBadgeProps {
 	rating: number;
+	className?: string;
 	onClick?: () => void;
 }
 
-const RatingBadge = ({ rating, onClick }: RatingBadgeProps) => {
+const RatingBadge = ({ rating, className, onClick }: RatingBadgeProps) => {
 	return (
-		<div className={styles.ratingBadge} onClick={onClick}>
+		<div className={`${styles.ratingBadge} ${className}`} onClick={onClick}>
 			<Star stroke="currentColor" />
-			<p>{rating}</p>
+			<p>{rating.toFixed(2)}</p>
 		</div>
 	);
 };

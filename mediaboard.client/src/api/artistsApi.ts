@@ -27,6 +27,7 @@ export const searchArtists = async (
 interface Album {
 	id: number;
 	title: string;
+	averageRating: number;
 	year?: number;
 	format?: string | null;
 }

@@ -1,11 +1,12 @@
 import { useState } from "react";
-import Star from "@/assets/star.svg?react";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "@tanstack/react-router";
 import styles from "@/features/artist/artist.module.css";
 import Card from "@/components/Cards/Card";
 import ImageWithDefault from "@/components/ImageWithDefault";
 import DefaultAlbumCover from "@/assets/music-album.svg?react";
-import { useAuth } from "@/context/AuthContext";
 import RatingDialog from "./RatingDialog";
+import RatingBadge from "@/components/RatingBadge";
 
 const FullAlbumCard = ({
 	albumId,
@@ -23,6 +24,7 @@ const FullAlbumCard = ({
 	rating?: number;
 }) => {
 	const { user } = useAuth();
+	const navigate = useNavigate();
 	const [dialogOpen, setDialogOpen] = useState(false);
 
 	return (
@@ -48,17 +50,19 @@ const FullAlbumCard = ({
 						)}
 					</div>
 					<div className={styles.albumFooter}>
-						<div className={styles.rating}>
-							{rating ?? "No rating yet"}
-						</div>
-						{user && (
-							<button
-								className={styles.rateButton}
-								onClick={() => setDialogOpen(true)}
-							>
-								<Star className={styles.rateButtonIcon} />
-								Rate
-							</button>
+						{/* User's own rating will go here */}
+						<div className={styles.rating}>No rating yet</div>
+						{rating ? (
+							<RatingBadge
+								rating={rating}
+								className={styles.ratingButton}
+								onClick={() => {
+									if (user) setDialogOpen(true);
+									else navigate({ to: "/login" });
+								}}
+							/>
+						) : (
+							"No rating yet"
 						)}
 					</div>
 				</div>
