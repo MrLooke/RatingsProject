@@ -38,7 +38,9 @@ const FullAlbumCard = ({
 
 				<div className={styles.info}>
 					<div className={styles.headers}>
-						<h2 title={title}>{title}</h2>
+						<h2 aria-label={title} title={title}>
+							{title}
+						</h2>
 						{year && (
 							<p>
 								{year} · {format ?? "Misc"}
