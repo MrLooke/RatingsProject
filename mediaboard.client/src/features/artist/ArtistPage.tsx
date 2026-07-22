@@ -114,6 +114,7 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 						albumId={album.id}
 						title={album.title}
 						year={album.year?.toString()}
+						format={album.format}
 					/>
 				))}
 			</div>

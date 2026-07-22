@@ -28,6 +28,7 @@ interface Album {
 	id: number;
 	title: string;
 	year?: number;
+	format?: string | null;
 }
 
 export interface ArtistPage {

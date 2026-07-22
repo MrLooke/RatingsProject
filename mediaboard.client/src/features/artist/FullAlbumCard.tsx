@@ -11,12 +11,14 @@ const FullAlbumCard = ({
 	albumId,
 	title,
 	year,
+	format,
 	imageSource,
 	rating,
 }: {
 	albumId: number;
 	title: string;
 	year: string | undefined;
+	format?: string | null;
 	imageSource?: string;
 	rating?: number;
 }) => {
@@ -37,7 +39,7 @@ const FullAlbumCard = ({
 				<div className={styles.info}>
 					<div className={styles.headers}>
 						<h2>{title}</h2>
-						{year && <p>{year} · Album</p>}
+						{year && <p>{year} · {format ?? "Misc"}</p>}
 					</div>
 					<div className={styles.albumFooter}>
 						<div className={styles.rating}>
