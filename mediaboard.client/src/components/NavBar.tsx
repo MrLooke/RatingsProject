@@ -39,9 +39,6 @@ const NavBar = () => {
 			<ul>
 				<Link to="/">Home</Link>
 			</ul>
-			<ul>
-				<Link to="/about">About</Link>
-			</ul>
 			<div className={styles.profileSection} ref={dropdownRef}>
 				{user && (
 					<span className={styles.username}>{user.username}</span>
