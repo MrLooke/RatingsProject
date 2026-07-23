@@ -15,10 +15,11 @@ const SearchItem = ({
 	imgSrc?: string | null;
 }) => {
 	const link = `/artist/${id}`;
+	const cleanTitle = title.replace(/\s*\(\d+\)$/, "");
 	return (
 		<Link to={link}>
 			<li className={styles.searchItem}>
-				<h2>{title}</h2>
+				<h2>{cleanTitle}</h2>
 				{subtitle && <h3></h3>}
 				{imgSrc && <img></img>}
 			</li>
