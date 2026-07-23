@@ -85,6 +85,7 @@ const FullAlbumCard = ({
 				<RatingDialog
 					albumId={albumId}
 					albumTitle={title}
+					initialRating={userRating}
 					onClose={() => setDialogOpen(false)}
 				/>
 			)}

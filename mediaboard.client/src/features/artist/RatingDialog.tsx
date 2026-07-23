@@ -55,13 +55,15 @@ const StarPicker = ({
 const RatingDialog = ({
 	albumTitle,
 	albumId,
+	initialRating = null,
 	onClose,
 }: {
 	albumTitle: string;
 	albumId: number;
+	initialRating?: number | null;
 	onClose: () => void;
 }) => {
-	const [stars, setStars] = useState(0);
+	const [stars, setStars] = useState(initialRating ? initialRating / 2 : 0);
 	const [review, setReview] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
