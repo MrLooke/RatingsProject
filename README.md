@@ -178,7 +178,3 @@ The frontend, API, and PostgreSQL database will all be running as separate conta
 **Ongoing:** Database optimization pass — indexes, denormalization, and materialized views — deferred until the application reaches a stable feature set. The album → track join is a known candidate for denormalization once track data is imported.
 
 ---
-
-## License
-
-This is a personal learning project. License TBD.
