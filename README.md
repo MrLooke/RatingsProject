@@ -63,43 +63,6 @@ See [Roadmap](#roadmap) below.
 
 ---
 
-## Getting Started
-
-### Prerequisites
-
-- [Docker](https://www.docker.com/) and Docker Compose
-- .NET SDK (for running EF Core CLI commands)
-
-### Setup
-
-1. Clone the repository
-   ```bash
-   git clone <repo-url>
-   cd MediaBoard
-   ```
-
-2. Create a `.env` file in the project root with the required secrets:
-   ```env
-   POSTGRES_USER=mediadb_dev
-   POSTGRES_PASSWORD=your-password-here
-   POSTGRES_DB=mediadb
-   JWT_KEY=your-generated-signing-key
-   ```
-
-3. Build and start all services:
-   ```bash
-   docker compose up --build
-   ```
-
-4. Apply database migrations (from inside the API container):
-   ```bash
-   docker compose exec api dotnet ef database update
-   ```
-
-The frontend, API, and PostgreSQL database will all be running as separate containers, networked together via Docker Compose.
-
----
-
 ## Architecture Notes
 
 - **Auth:** Access tokens are short-lived JWTs delivered via `httpOnly`, `Secure` cookies (disabled in development). Refresh tokens are long-lived, stored server-side, and rotated on each use — the old token is deleted rather than flagged, so token validity is a simple existence check.
