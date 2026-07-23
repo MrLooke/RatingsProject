@@ -11,7 +11,7 @@ const RatingBadge = ({ rating, className, onClick }: RatingBadgeProps) => {
 	return (
 		<div className={`${styles.ratingBadge} ${className}`} onClick={onClick}>
 			<Star stroke="currentColor" />
-			<p>{rating.toFixed(2)}</p>
+			<p>{(rating / 2).toFixed(2)}</p>
 		</div>
 	);
 };

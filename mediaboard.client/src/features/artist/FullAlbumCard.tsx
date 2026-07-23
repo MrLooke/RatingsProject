@@ -7,6 +7,7 @@ import ImageWithDefault from "@/components/ImageWithDefault";
 import DefaultAlbumCover from "@/assets/music-album.svg?react";
 import RatingDialog from "./RatingDialog";
 import RatingBadge from "@/components/RatingBadge";
+import NoRatingBadge from "@/components/NoRatingBadge";
 import StarRating from "@/components/StarRating";
 
 const FullAlbumCard = ({
@@ -70,7 +71,12 @@ const FullAlbumCard = ({
 								}}
 							/>
 						) : (
-							"No rating yet"
+							<NoRatingBadge
+								onClick={() => {
+									if (user) setDialogOpen(true);
+									else navigate({ to: "/login" });
+								}}
+							/>
 						)}
 					</div>
 				</div>

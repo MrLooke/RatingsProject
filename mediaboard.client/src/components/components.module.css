@@ -221,6 +221,26 @@
 	background-color: var(--primary-muted-hover);
 }
 
+.noRatingBadge {
+	color: var(--text-dark);
+	background-color: var(--bg);
+	border: 1px solid var(--border-muted);
+
+	svg {
+		color: var(--text-dark);
+	}
+}
+
+.noRatingBadge:hover {
+	color: var(--text);
+	background-color: var(--bg);
+	border: 1px solid var(--text);
+
+	svg {
+		color: var(--text);
+	}
+}
+
 .starRating {
 	display: flex;
 	gap: 2px;
