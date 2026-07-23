@@ -1,17 +1,33 @@
-﻿using Npgsql;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
-var builder = new ConfigurationBuilder()
+var config = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .Build();
 
-IConfiguration config = builder.Build();
-string connectionString = config.GetConnectionString("DefaultConnection")!;
-await ImportFormatsIntoAlbumTable();
+string connectionString = config.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Missing DefaultConnection connection string in appsettings.json.");
+
+string mode = args.Length > 0 ? args[0] : "formats";
+switch (mode)
+{
+    case "full":
+        await RunFullImport();
+        break;
+    case "formats":
+        await ImportFormatsIntoAlbumTable();
+        break;
+    default:
+        Console.WriteLine("Usage: dotnet run [full|formats]");
+        Console.WriteLine("  full     import all entity and relation tables from XmlParsing exports");
+        Console.WriteLine("  formats  backfill the album.format column (default)");
+        break;
+}
 
 async Task ImportFormatsIntoAlbumTable()
 {
-    var formatSchema = new Schema(false, "../XmlParsing/Exports/releases/", new List<string>(["id", "main_id", "format"]), new List<string>(["INT", "INT", "TEXT"]));
+    var formatSchema = new Schema("../XmlParsing/Exports/releases/", ["id", "main_id", "format"], ["INT", "INT", "TEXT"]);
 
     await using var connection = new NpgsqlConnection(connectionString);
     await connection.OpenAsync();
@@ -27,64 +43,45 @@ async Task ImportFormatsIntoAlbumTable()
             UPDATE album a
             SET format = t.format
             FROM {tempTable} t
-            WHERE a.id = t.main_id 
+            WHERE a.id = t.main_id
             AND a.format IS NULL;
         ", connection);
         await updateActualFromTemp.ExecuteNonQueryAsync();
     }
     finally
     {
-        await using var dropTempCmd = new NpgsqlCommand($"DROP TABLE IF EXISTS {tempTable};", connection);
-        await dropTempCmd.ExecuteNonQueryAsync();
+        await DropTable(connection, tempTable);
     }
 }
 
-
-async Task MainImport()
+async Task RunFullImport()
 {
-    Dictionary<string, Schema> entityTableMap = new()
+    Dictionary<string, Schema> entityTables = new()
     {
-        ["artist"] = new Schema(false, "../XmlParsing/Exports/artists/", new List<string>(["id", "name", "real_name", "description"]), new List<string>(["INT", "TEXT", "TEXT", "TEXT"])),
-        ["album"] = new Schema(false, "../XmlParsing/Exports/albums/", new List<string>(["id", "main_id", "title", "year", "image_url"]), new List<string>(["INT", "INT", "TEXT", "INT", "TEXT"])),
-        ["genre"] = new Schema(false, "../XmlParsing/Exports/genres/", new List<string>(["id", "name"]), new List<string>(["INT", "VARCHAR(50)"])),
-        ["music_style"] = new Schema(false, "../XmlParsing/Exports/styles/", new List<string>(["id", "name"]), new List<string>(["INT", "VARCHAR(50)"])),
+        ["artist"] = new Schema("../XmlParsing/Exports/artists/", ["id", "name", "real_name", "description"], ["INT", "TEXT", "TEXT", "TEXT"]),
+        ["album"] = new Schema("../XmlParsing/Exports/albums/", ["id", "main_id", "title", "year", "image_url"], ["INT", "INT", "TEXT", "INT", "TEXT"]),
+        ["genre"] = new Schema("../XmlParsing/Exports/genres/", ["id", "name"], ["INT", "VARCHAR(50)"]),
+        ["music_style"] = new Schema("../XmlParsing/Exports/styles/", ["id", "name"], ["INT", "VARCHAR(50)"]),
     };
 
-    Dictionary<string, Schema> relationTableMap = new()
+    Dictionary<string, Schema> relationTables = new()
     {
-        ["album_genre"] = new Schema(false, "../XmlParsing/Exports/albums_genres/", new List<string>(["album_id", "genre_id"]), new List<string>(["INT", "INT"]), ("album_id", "genre_id")),
-        ["album_style"] = new Schema(false, "../XmlParsing/Exports/albums_styles/", new List<string>(["album_id", "style_id"]), new List<string>(["INT", "INT"]), ("album_id", "style_id")),
-        ["album_artist"] = new Schema(false, "../XmlParsing/Exports/albums_artists/", new List<string>(["album_id", "artist_id"]), new List<string>(["INT", "INT"]), ("album_id", "artist_id"), ("album", "artist")),
+        ["album_genre"] = new Schema("../XmlParsing/Exports/albums_genres/", ["album_id", "genre_id"], ["INT", "INT"], ("album_id", "genre_id")),
+        ["album_style"] = new Schema("../XmlParsing/Exports/albums_styles/", ["album_id", "style_id"], ["INT", "INT"], ("album_id", "style_id")),
+        ["album_artist"] = new Schema("../XmlParsing/Exports/albums_artists/", ["album_id", "artist_id"], ["INT", "INT"], ("album_id", "artist_id"), ("album", "artist")),
     };
 
-    var entityTasks = new List<Task>();
-    foreach (var (tableName, schema) in entityTableMap)
-    {
-        if (schema.isLoadingTable && schema.Columns.Count == schema.Types.Count)
-        {
-            entityTasks.Add(ExecuteImportFromFilesToTable(connectionString, tableName, schema));
-        }
-    }
-
-    Console.WriteLine("Running entity table import tasks concurrently...");
-    await Task.WhenAll(entityTasks);
+    // Entity tables must land before relation tables so foreign keys resolve.
+    Console.WriteLine("Importing entity tables...");
+    await Task.WhenAll(entityTables.Select(t => ImportTable(connectionString, t.Key, t.Value)));
     Console.WriteLine("Entity table imports complete.");
 
-    var relationTasks = new List<Task>();
-    foreach (var (tableName, schema) in relationTableMap)
-    {
-        if (schema.isLoadingTable && schema.Columns.Count == schema.Types.Count)
-        {
-            relationTasks.Add(ExecuteImportFromFilesToTable(connectionString, tableName, schema));
-        }
-    }
-
-    Console.WriteLine("Running relational table import tasks concurrently...");
-    await Task.WhenAll(relationTasks);
-    Console.WriteLine("Relational table imports complete.");
+    Console.WriteLine("Importing relation tables...");
+    await Task.WhenAll(relationTables.Select(t => ImportTable(connectionString, t.Key, t.Value)));
+    Console.WriteLine("Relation table imports complete.");
 }
 
-static async Task ExecuteImportFromFilesToTable(string connectionString, string table, Schema schema)
+static async Task ImportTable(string connectionString, string table, Schema schema)
 {
     await using var connection = new NpgsqlConnection(connectionString);
     await connection.OpenAsync();
@@ -94,34 +91,33 @@ static async Task ExecuteImportFromFilesToTable(string connectionString, string 
 
     await ImportFilesFromFolder(schema.FolderPath, connection, tempTable, schema.GetColumnString());
 
-    if (schema.Relation == null)
+    if (schema.Relation is null)
     {
-        await ExecuteMoveToActualTable(connection, tempTable, table);
+        await MoveToEntityTable(connection, tempTable, table);
     }
-    else if(schema.ParentTables == null)
+    else if (schema.ParentTables is null)
     {
-        await ExecuteMoveToRelationTable(connection, tempTable, table, schema.Relation.Value);
+        await MoveToRelationTable(connection, tempTable, table, schema.Relation.Value);
     }
     else
     {
-        await ExecuteMoveToRelationTableWithParentCheck(connection, tempTable, table, schema.Relation.Value, schema.ParentTables.Value);
+        await MoveToRelationTableWithParentCheck(connection, tempTable, table, schema.Relation.Value, schema.ParentTables.Value);
     }
 }
 
-static async Task ImportFilesFromFolder(string folderPath, NpgsqlConnection connection, string table, string schema)
+static async Task ImportFilesFromFolder(string folderPath, NpgsqlConnection connection, string table, string columnList)
 {
-    string[] files = Directory.GetFiles(folderPath);
-    string copyCommand = $"COPY {table}{schema} FROM STDIN WITH (FORMAT CSV, HEADER true)";
+    string copyCommand = $"COPY {table}{columnList} FROM STDIN WITH (FORMAT CSV, HEADER true)";
 
-    foreach (var filePath in files)
+    foreach (string filePath in Directory.GetFiles(folderPath).Order())
     {
         var writer = await connection.BeginTextImportAsync(copyCommand);
-        using var filestream = new StreamReader(filePath);
+        using var fileReader = new StreamReader(filePath);
 
         try
         {
             string? line;
-            while ((line = await filestream.ReadLineAsync()) != null)
+            while ((line = await fileReader.ReadLineAsync()) != null)
             {
                 await writer.WriteLineAsync(line);
             }
@@ -140,7 +136,6 @@ static async Task ImportFilesFromFolder(string folderPath, NpgsqlConnection conn
 
         Console.WriteLine($"Finished importing {filePath}");
     }
-
 }
 
 static async Task CreateTempTable(NpgsqlConnection connection, string tempTable, string columnTypesString)
@@ -149,71 +144,74 @@ static async Task CreateTempTable(NpgsqlConnection connection, string tempTable,
     await createTempCommand.ExecuteNonQueryAsync();
 }
 
+static async Task DropTable(NpgsqlConnection connection, string table)
+{
+    await using var dropCommand = new NpgsqlCommand($"DROP TABLE IF EXISTS {table};", connection);
+    await dropCommand.ExecuteNonQueryAsync();
+}
 
-static async Task ExecuteMoveToActualTable(NpgsqlConnection connection, string tempTable, string actualTable)
+static async Task MoveToEntityTable(NpgsqlConnection connection, string tempTable, string actualTable)
 {
     try
     {
-        await using var moveFromTempToActual = new NpgsqlCommand(@$"
+        await using var command = new NpgsqlCommand(@$"
             INSERT INTO {actualTable}
             SELECT DISTINCT * FROM {tempTable}
             ON CONFLICT (id) DO NOTHING", connection);
-        await moveFromTempToActual.ExecuteNonQueryAsync();
+        await command.ExecuteNonQueryAsync();
     }
     finally
     {
-        await using var dropTempCmd = new NpgsqlCommand($"DROP TABLE IF EXISTS {tempTable};", connection);
-        await dropTempCmd.ExecuteNonQueryAsync();
+        await DropTable(connection, tempTable);
     }
 }
 
-static async Task ExecuteMoveToRelationTable(NpgsqlConnection connection, string tempTable, string actualTable, (string Id1, string Id2) relation)
+static async Task MoveToRelationTable(NpgsqlConnection connection, string tempTable, string actualTable, (string Col1, string Col2) relation)
 {
     try
     {
-        await using var moveFromTempToRelation = new NpgsqlCommand(@$"
+        await using var command = new NpgsqlCommand(@$"
             INSERT INTO {actualTable}
             SELECT DISTINCT * FROM {tempTable}
-            ON CONFLICT ({relation.Id1}, {relation.Id2}) DO NOTHING", connection);
-        await moveFromTempToRelation.ExecuteNonQueryAsync();
+            ON CONFLICT ({relation.Col1}, {relation.Col2}) DO NOTHING", connection);
+        await command.ExecuteNonQueryAsync();
     }
     finally
     {
-        await using var dropTempCmd = new NpgsqlCommand($"DROP TABLE IF EXISTS {tempTable};", connection);
-        await dropTempCmd.ExecuteNonQueryAsync();
+        await DropTable(connection, tempTable);
     }
 }
 
-static async Task ExecuteMoveToRelationTableWithParentCheck(NpgsqlConnection connection, string tempTable, string actualTable, (string Col1, string Col2) relation, (string Parent1, string Parent2) parents)
+static async Task MoveToRelationTableWithParentCheck(NpgsqlConnection connection, string tempTable, string actualTable, (string Col1, string Col2) relation, (string Parent1, string Parent2) parents)
 {
     try
     {
-        await using var moveFromTempToRelation = new NpgsqlCommand(@$"
+        await using var command = new NpgsqlCommand(@$"
             INSERT INTO {actualTable} ({relation.Col1}, {relation.Col2})
             SELECT DISTINCT t.{relation.Col1}, t.{relation.Col2}
             FROM {tempTable} t
-            INNER JOIN {parents.Parent1} p1 ON t.{relation.Col1} = p1.id            
+            INNER JOIN {parents.Parent1} p1 ON t.{relation.Col1} = p1.id
             INNER JOIN {parents.Parent2} p2 ON t.{relation.Col2} = p2.id
             ON CONFLICT ({relation.Col1}, {relation.Col2}) DO NOTHING", connection);
-        await moveFromTempToRelation.ExecuteNonQueryAsync();
+        await command.ExecuteNonQueryAsync();
     }
     finally
     {
-        await using var dropTempCmd = new NpgsqlCommand($"DROP TABLE IF EXISTS {tempTable};", connection);
-        await dropTempCmd.ExecuteNonQueryAsync();
+        await DropTable(connection, tempTable);
     }
 }
 
-
-public record Schema(bool isLoadingTable, string FolderPath, List<string> Columns, List<string> Types, (string, string)? Relation = null, (string, string)? ParentTables = null) 
-{ 
-    public string GetColumnString()
-    {
-        return $"({string.Join(",", Columns)})";
-    }
+public record Schema(string FolderPath, List<string> Columns, List<string> Types, (string Col1, string Col2)? Relation = null, (string Parent1, string Parent2)? ParentTables = null)
+{
+    public string GetColumnString() => $"({string.Join(",", Columns)})";
 
     public string GetColumnsWithTypesString()
     {
+        if (Columns.Count != Types.Count)
+        {
+            throw new InvalidOperationException($"Schema for {FolderPath} has {Columns.Count} columns but {Types.Count} types.");
+        }
+
         var columnTypes = Columns.Zip(Types, (column, type) => $"{column} {type}");
         return $"({string.Join(",", columnTypes)})";
     }
