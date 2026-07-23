@@ -24,4 +24,6 @@ public partial class Album
     public virtual ICollection<MusicStyle> Styles { get; set; } = new List<MusicStyle>();
 
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
+    public virtual ICollection<Song> Songs { get; set; } = new List<Song>();
 }

@@ -33,6 +33,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
+    public virtual DbSet<Song> Songs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("pg_trgm");
@@ -236,6 +238,29 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<RefreshToken>(entity =>
         {
             entity.HasIndex(r => r.Token).IsUnique();
+        });
+
+        modelBuilder.Entity<Song>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("song_pkey");
+
+            entity.ToTable("song");
+
+            entity.HasIndex(e => e.AlbumId, "ix_song_album_id");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.AlbumId).HasColumnName("album_id");
+            entity.Property(e => e.Title).HasColumnName("title");
+            entity.Property(e => e.Position)
+                .HasMaxLength(20)
+                .HasColumnName("position");
+            entity.Property(e => e.Duration)
+                .HasMaxLength(20)
+                .HasColumnName("duration");
+
+            entity.HasOne(d => d.Album).WithMany(p => p.Songs)
+                .HasForeignKey(d => d.AlbumId)
+                .HasConstraintName("song_album_id_fkey");
         });
 
         OnModelCreatingPartial(modelBuilder);
