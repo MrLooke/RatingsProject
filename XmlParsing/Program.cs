@@ -6,17 +6,18 @@ if (Directory.Exists("Exports"))
     Directory.Delete("Exports", true);
 }
 
-string[] exportDirs = ["Exports/releases", "Exports/artists", "Exports/albums", "Exports/albums_artists"];
+string[] exportDirs = ["Exports/releases", "Exports/artists", "Exports/albums", "Exports/albums_artists", "Exports/songs"];
 foreach (string dir in exportDirs)
 {
     Directory.CreateDirectory(dir);
 }
 
-Run("Release formats", () => ReleaseParser.ReleasesToCsv("./XmlFiles/releases.xml.gz", "Exports/releases/releases"));
-Run("Artists", () => ArtistsParser.ArtistsToCsv("./XmlFiles/artists.xml.gz", "Exports/artists/artists"));
-Run("Albums", () => MastersParser.AlbumsToCsv("./XmlFiles/masters.xml.gz", "Exports/albums/albums"));
-Run("Album-artist relations", () => MastersParser.AlbumsToArtistsCsv("./XmlFiles/masters.xml.gz", "Exports/albums_artists/albums_artists"));
-Run("Genres and styles", () => MastersParser.AlbumStylesGenresToCsv("./XmlFiles/masters.xml.gz", "Exports/"));
+//Run("Release formats", () => ReleaseParser.ReleasesToCsv("./XmlFiles/releases.xml.gz", "Exports/releases/releases"));
+Run("Songs", () => ReleaseParser.SongsToCsv("./XmlFiles/releases.xml.gz", "Exports/songs/songs"));
+//Run("Artists", () => ArtistsParser.ArtistsToCsv("./XmlFiles/artists.xml.gz", "Exports/artists/artists"));
+//Run("Albums", () => MastersParser.AlbumsToCsv("./XmlFiles/masters.xml.gz", "Exports/albums/albums"));
+//Run("Album-artist relations", () => MastersParser.AlbumsToArtistsCsv("./XmlFiles/masters.xml.gz", "Exports/albums_artists/albums_artists"));
+//Run("Genres and styles", () => MastersParser.AlbumStylesGenresToCsv("./XmlFiles/masters.xml.gz", "Exports/"));
 
 static void Run(string step, Action parse)
 {

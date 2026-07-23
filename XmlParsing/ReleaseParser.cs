@@ -62,6 +62,90 @@ namespace XmlParsing
             }
         }
 
+        internal static void SongsToCsv(string xmlZipPath, string csvFileName)
+        {
+            using var csv = new BatchedCsvWriter(csvFileName, "MainId,Title,Position,Duration");
+            using var fileStream = File.OpenRead(xmlZipPath);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var xmlReader = XmlReader.Create(gzipStream, new XmlReaderSettings
+            {
+                IgnoreWhitespace = true
+            });
+
+            var seenMasters = new HashSet<int>(2_000_000);
+
+            while (xmlReader.Read())
+            {
+                if (xmlReader.NodeType != XmlNodeType.Element || xmlReader.Name != "release") continue;
+
+                int mainId = 0;
+                var tracks = new List<(string Title, string Position, string Duration)>();
+                bool insideTracklist = false;
+
+                using var innerReader = xmlReader.ReadSubtree();
+                while (innerReader.Read())
+                {
+                    if (innerReader.Name == "tracklist")
+                    {
+                        if (innerReader.NodeType == XmlNodeType.Element) insideTracklist = true;
+                        else if (innerReader.NodeType == XmlNodeType.EndElement) insideTracklist = false;
+                    }
+
+                    if (innerReader.NodeType != XmlNodeType.Element) continue;
+
+                    switch (innerReader.Name)
+                    {
+                        case "master_id":
+                            mainId = Helpers.ParseIntOrNull(innerReader.ReadString()) ?? 0;
+                            break;
+                        case "track" when insideTracklist:
+                            tracks.Add(ReadTrack(innerReader.ReadSubtree()));
+                            break;
+                    }
+                }
+
+                if (mainId == 0 || seenMasters.Contains(mainId) || tracks.Count == 0) continue;
+
+                seenMasters.Add(mainId);
+
+                foreach (var track in tracks)
+                {
+                    if (string.IsNullOrEmpty(track.Title)) continue;
+                    csv.WriteLine($"{mainId},\"{track.Title.EscapeCsv()}\",\"{track.Position.EscapeCsv()}\",\"{track.Duration.EscapeCsv()}\"");
+                }
+            }
+        }
+
+        private static (string Title, string Position, string Duration) ReadTrack(XmlReader trackReader)
+        {
+            string title = "";
+            string position = "";
+            string duration = "";
+
+            using (trackReader)
+            {
+                while (trackReader.Read())
+                {
+                    if (trackReader.NodeType != XmlNodeType.Element) continue;
+
+                    switch (trackReader.Name)
+                    {
+                        case "title":
+                            title = trackReader.ReadString();
+                            break;
+                        case "position":
+                            position = trackReader.ReadString();
+                            break;
+                        case "duration":
+                            duration = trackReader.ReadString();
+                            break;
+                    }
+                }
+            }
+
+            return (title, position, duration);
+        }
+
         internal static void PrintSampleReleases(string xmlZipPath, int count = 3)
         {
             using var fileStream = File.OpenRead(xmlZipPath);

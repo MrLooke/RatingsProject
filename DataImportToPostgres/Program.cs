@@ -18,10 +18,14 @@ switch (mode)
     case "formats":
         await ImportFormatsIntoAlbumTable();
         break;
+    case "songs":
+        await ImportSongs();
+        break;
     default:
-        Console.WriteLine("Usage: dotnet run [full|formats]");
+        Console.WriteLine("Usage: dotnet run [full|formats|songs]");
         Console.WriteLine("  full     import all entity and relation tables from XmlParsing exports");
         Console.WriteLine("  formats  backfill the album.format column (default)");
+        Console.WriteLine("  songs    import the song table from XmlParsing exports");
         break;
 }
 
@@ -79,6 +83,34 @@ async Task RunFullImport()
     Console.WriteLine("Importing relation tables...");
     await Task.WhenAll(relationTables.Select(t => ImportTable(connectionString, t.Key, t.Value)));
     Console.WriteLine("Relation table imports complete.");
+}
+
+async Task ImportSongs()
+{
+    var songSchema = new Schema("../XmlParsing/Exports/songs/", ["main_id", "title", "position", "duration"], ["INT", "TEXT", "TEXT", "TEXT"]);
+
+    await using var connection = new NpgsqlConnection(connectionString);
+    await connection.OpenAsync();
+
+    string tempTable = "temp_song";
+    await CreateTempTable(connection, tempTable, songSchema.GetColumnsWithTypesString());
+
+    await ImportFilesFromFolder(songSchema.FolderPath, connection, tempTable, songSchema.GetColumnString());
+
+    try
+    {
+        await using var insertCommand = new NpgsqlCommand($@"
+            INSERT INTO song (album_id, title, position, duration)
+            SELECT t.main_id, t.title, t.position, t.duration
+            FROM {tempTable} t
+            INNER JOIN album a ON t.main_id = a.id;
+        ", connection);
+        await insertCommand.ExecuteNonQueryAsync();
+    }
+    finally
+    {
+        await DropTable(connection, tempTable);
+    }
 }
 
 static async Task ImportTable(string connectionString, string table, Schema schema)
