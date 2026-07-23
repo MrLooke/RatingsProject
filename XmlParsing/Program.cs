@@ -1,36 +1,37 @@
-﻿using XmlParsing;
-using XmlReaders;
+using System.Xml;
+using XmlParsing;
 
 if (Directory.Exists("Exports"))
 {
     Directory.Delete("Exports", true);
 }
-Directory.CreateDirectory("Exports");
 
-if (!Directory.Exists("Exports/releases/"))
+string[] exportDirs = ["Exports/releases", "Exports/artists", "Exports/albums", "Exports/albums_artists"];
+foreach (string dir in exportDirs)
 {
-    Directory.CreateDirectory("Exports/releases/");
+    Directory.CreateDirectory(dir);
 }
 
-ReleaseParser.ReleasesToCsv("./XmlFiles/releases.xml.gz", "Exports/releases/releases")
+Run("Release formats", () => ReleaseParser.ReleasesToCsv("./XmlFiles/releases.xml.gz", "Exports/releases/releases"));
+Run("Artists", () => ArtistsParser.ArtistsToCsv("./XmlFiles/artists.xml", "Exports/artists/artists"));
+Run("Albums", () => MastersParser.AlbumsToCsv("./XmlFiles/masters.xml", "Exports/albums/albums"));
+Run("Album-artist relations", () => MastersParser.AlbumsToArtistsCsv("./XmlFiles/masters.xml", "Exports/albums_artists/albums_artists"));
+Run("Genres and styles", () => MastersParser.AlbumStylesGenresToCsv("./XmlFiles/masters.xml", "Exports/"));
 
-if (!Directory.Exists("Exports/albums/"))
+static void Run(string step, Action parse)
 {
-    Directory.CreateDirectory("Exports/albums/");
+    try
+    {
+        Console.WriteLine($"{step}: parsing...");
+        parse();
+        Console.WriteLine($"{step}: complete.");
+    }
+    catch (XmlException ex)
+    {
+        Console.WriteLine($"{step}: XML error at line {ex.LineNumber}, position {ex.LinePosition} — {ex.Message}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"{step}: failed — {ex.Message}");
+    }
 }
-
-if (!Directory.Exists("Exports/albums_artists/"))
-{
-    Directory.CreateDirectory("Exports/albums_artists/");
-}
-
-string targetDir = "Exports/artists/";
-if (!Directory.Exists(targetDir))
-{
-    Directory.CreateDirectory(targetDir);
-}
-
-ArtistsParser.ArtistsToCsv("./XmlFiles/artists.xml", targetDir + "artists");
-MastersParsers.AlbumsToCsv("./XmlFiles/masters.xml", "Exports/albums/albums");
-MastersParsers.AlbumsToArtistsCsv("./XmlFiles/masters.xml", "Exports/albums_artists/albums_artists");
-MastersParsers.AlbumStylesGenresToCsv("./XmlFiles/masters.xml", "Exports/");

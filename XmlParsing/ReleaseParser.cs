@@ -1,77 +1,103 @@
-﻿using System.IO.Compression;
-using System.Text;
+using System.IO.Compression;
 using System.Xml;
 
 namespace XmlParsing
 {
-    public static class ReleaseParser
+    internal static class ReleaseParser
     {
-        internal class ReleaseFormat
+        internal static void ReleasesToCsv(string xmlZipPath, string csvFileName)
         {
-            public int Id { get; set; }
+            using var csv = new BatchedCsvWriter(csvFileName, "Id,MainId,Format");
+            using var fileStream = File.OpenRead(xmlZipPath);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var xmlReader = XmlReader.Create(gzipStream, new XmlReaderSettings
+            {
+                IgnoreWhitespace = true
+            });
 
-            public int MainId { get; set; }
+            var seenMasters = new HashSet<int>(2_000_000);
 
-            public string Format { get; set; } = "";
+            while (xmlReader.Read())
+            {
+                if (xmlReader.NodeType != XmlNodeType.Element || xmlReader.Name != "release") continue;
 
-            public string Title { get; set; } = "";
+                int id = Helpers.ParseIntOrNull(xmlReader.GetAttribute("id")) ?? 0;
+                int mainId = 0;
+                var descriptions = new List<string>();
+                bool insideFormats = false;
 
-            public List<string> Descriptions = new();
+                using var innerReader = xmlReader.ReadSubtree();
+                while (innerReader.Read())
+                {
+                    if (innerReader.Name == "formats")
+                    {
+                        if (innerReader.NodeType == XmlNodeType.Element) insideFormats = true;
+                        else if (innerReader.NodeType == XmlNodeType.EndElement) insideFormats = false;
+                    }
+
+                    if (innerReader.NodeType != XmlNodeType.Element) continue;
+
+                    switch (innerReader.Name)
+                    {
+                        case "master_id":
+                            mainId = Helpers.ParseIntOrNull(innerReader.ReadString()) ?? 0;
+                            break;
+                        case "description" when insideFormats:
+                            string description = innerReader.ReadString();
+                            if (!string.IsNullOrEmpty(description))
+                            {
+                                descriptions.Add(description);
+                            }
+                            break;
+                    }
+                }
+
+                if (id == 0 || mainId == 0 || seenMasters.Contains(mainId)) continue;
+
+                string? format = NormalizeFormat(descriptions);
+                if (format is null) continue;
+
+                seenMasters.Add(mainId);
+                csv.WriteLine($"{id},{mainId},\"{format}\"");
+            }
         }
 
-        public static void Inspection(string xmlZipPath)
+        internal static void PrintSampleReleases(string xmlZipPath, int count = 3)
         {
-            using FileStream fileStream = File.OpenRead(xmlZipPath);
-            using GZipStream gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
-            using XmlReader reader = XmlReader.Create(gzipStream, new XmlReaderSettings
+            using var fileStream = File.OpenRead(xmlZipPath);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var reader = XmlReader.Create(gzipStream, new XmlReaderSettings
             {
                 IgnoreWhitespace = true,
                 IgnoreComments = true
             });
 
-            int releaseCount = 0;
-            StringBuilder currentRelease = new StringBuilder();
-            bool capturing = false;
-
-            while (reader.Read())
+            int printed = 0;
+            while (printed < count && reader.Read())
             {
                 if (reader.NodeType == XmlNodeType.Element && reader.Name == "release")
                 {
-                    capturing = true;
-                    currentRelease.Clear();
-                }
-
-                if (capturing)
-                    currentRelease.Append(reader.ReadOuterXml());
-
-                if (capturing)
-                {
-                    Console.WriteLine(currentRelease.ToString());
-                    releaseCount++;
-                    capturing = false;
-
-                    if (releaseCount >= 3) break;
+                    Console.WriteLine(reader.ReadOuterXml());
+                    printed++;
                 }
             }
         }
 
-        public static void InspectionForArtist(string xmlZipPath, string artistName, string outputPath)
+        internal static void ExportReleasesForArtist(string xmlZipPath, string artistName, string outputPath)
         {
-            using FileStream fileStream = File.OpenRead(xmlZipPath);
-            using GZipStream gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
-            using XmlReader reader = XmlReader.Create(gzipStream, new XmlReaderSettings
+            using var fileStream = File.OpenRead(xmlZipPath);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var reader = XmlReader.Create(gzipStream, new XmlReaderSettings
             {
                 IgnoreWhitespace = true,
                 IgnoreComments = true
             });
 
-            var outputSettings = new XmlWriterSettings
+            using var writer = XmlWriter.Create(outputPath, new XmlWriterSettings
             {
                 Indent = true,
                 IndentChars = "  "
-            };
-
-            using XmlWriter writer = XmlWriter.Create(outputPath, outputSettings);
+            });
             writer.WriteStartDocument();
             writer.WriteStartElement("releases");
 
@@ -79,24 +105,20 @@ namespace XmlParsing
 
             while (reader.Read())
             {
-                if (reader.NodeType == XmlNodeType.Element && reader.Name == "release")
-                {
-                    string releaseXml = reader.ReadOuterXml();
+                if (reader.NodeType != XmlNodeType.Element || reader.Name != "release") continue;
 
-                    if (ReleaseContainsArtist(releaseXml, artistName))
-                    {
-                        // Re-read the captured fragment and write it into the output document
-                        using XmlReader fragmentReader = XmlReader.Create(
-                            new StringReader(releaseXml),
-                            new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment });
+                string releaseXml = reader.ReadOuterXml();
+                if (!ReleaseContainsArtist(releaseXml, artistName)) continue;
 
-                        writer.WriteNode(fragmentReader, defattr: true);
-                        matchCount++;
-                    }
-                }
+                using var fragmentReader = XmlReader.Create(
+                    new StringReader(releaseXml),
+                    new XmlReaderSettings { ConformanceLevel = ConformanceLevel.Fragment });
+
+                writer.WriteNode(fragmentReader, defattr: true);
+                matchCount++;
             }
 
-            writer.WriteEndElement(); // </releases>
+            writer.WriteEndElement();
             writer.WriteEndDocument();
 
             Console.WriteLine($"Exported {matchCount} releases for '{artistName}' to {outputPath}");
@@ -104,17 +126,17 @@ namespace XmlParsing
 
         private static bool ReleaseContainsArtist(string releaseXml, string artistName)
         {
-            using XmlReader releaseReader = XmlReader.Create(new StringReader(releaseXml));
+            using var releaseReader = XmlReader.Create(new StringReader(releaseXml));
 
             bool insideArtists = false;
 
             while (releaseReader.Read())
             {
-                if (releaseReader.NodeType == XmlNodeType.Element && releaseReader.Name == "artists")
-                    insideArtists = true;
-
-                if (releaseReader.NodeType == XmlNodeType.EndElement && releaseReader.Name == "artists")
-                    insideArtists = false;
+                if (releaseReader.Name == "artists")
+                {
+                    if (releaseReader.NodeType == XmlNodeType.Element) insideArtists = true;
+                    else if (releaseReader.NodeType == XmlNodeType.EndElement) insideArtists = false;
+                }
 
                 if (insideArtists
                     && releaseReader.NodeType == XmlNodeType.Element
@@ -129,130 +151,8 @@ namespace XmlParsing
             return false;
         }
 
-        public static void ReleasesToCsv(string xmlZipPath, string csvFileName)
-        {
-            int fileNumber = 1;
-            int count = 0;
-            int batchSize = 100000;
-            HashSet<int> seen = new HashSet<int>(2000000);
-
-            const string headers = "Id,MainId,Format";
-
-            StreamWriter csvWriter = new StreamWriter($"{csvFileName}_{fileNumber}.csv", false, Encoding.UTF8);
-            csvWriter.WriteLine(headers);
-
-            using FileStream fileStream = File.OpenRead(xmlZipPath);
-            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
-            using var xmlReader = XmlReader.Create(gzipStream, new XmlReaderSettings
-            {
-                IgnoreWhitespace = true
-            });
-
-            bool insideFormats = false;
-            try
-            {
-                while (xmlReader.Read())
-                {
-                    ReleaseFormat format = new ReleaseFormat();
-
-                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "release")
-                    {
-                        Helpers.ParseIntAndSet(xmlReader.GetAttribute("id") ?? "", (val) => format.Id = val);
-
-                        using var innerReader = xmlReader.ReadSubtree();
-
-                        while (innerReader.Read())
-                        {
-                            if(innerReader.Name == "formats" && innerReader.NodeType == XmlNodeType.Element)
-                            {
-                                insideFormats = true;
-                            }
-
-                            if (innerReader.Name == "formats" && innerReader.NodeType == XmlNodeType.EndElement)
-                            {
-                                insideFormats = false;
-                            }
-
-
-                            if (innerReader.NodeType != XmlNodeType.Element)
-                            {
-                                innerReader.Skip();
-                                continue;
-                            }
-
-                            if (innerReader.Name == "master_id")
-                            {
-                                Helpers.ParseIntAndSet(innerReader.ReadString(), (val) => format.MainId = val);
-                            }
-
-                            if (innerReader.Name == "title")
-                            {
-                                string title = innerReader.ReadString() ?? "";
-                                if(!string.IsNullOrEmpty(title))
-                                {
-                                    format.Title = title;
-                                }
-                            }
-
-
-                            if (insideFormats && innerReader.Name == "description")
-                            {
-                                string desc = innerReader.ReadString() ?? "";
-                                if (!string.IsNullOrEmpty(desc))
-                                {
-                                    format.Descriptions.Add(desc);
-                                }
-                            }
-                        }
-                    }
-
-                    if (format.Id != 0 && format.MainId != 0 && format.Descriptions.Count > 0)
-                    {
-                        if (seen.Contains(format.MainId)) continue;
-
-                        format.Format = NormalizeFormat(format.Descriptions) ?? "";
-
-                        if (string.IsNullOrEmpty(format.Format)) continue;
-                        seen.Add(format.MainId);
-
-                        csvWriter.WriteLine($"{format.Id},{format.MainId},\"{format.Format}\"");
-                        count++;
-
-                        if (count == batchSize)
-                        {
-                            csvWriter.Dispose();
-
-                            fileNumber++;
-                            csvWriter = new StreamWriter($"{csvFileName}_{fileNumber}.csv", false, Encoding.UTF8);
-                            csvWriter.WriteLine(headers);
-                            count = 0;
-                        }
-                    }
-                }
-            }
-            catch (XmlException ex)
-            {
-                Console.WriteLine($"\nFATAL XML ERROR: {ex.Message}");
-                Console.WriteLine($"Failed near Line: {ex.LineNumber}, Position: {ex.LinePosition}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"\nUNEXPECTED ERROR: {ex.Message}");
-            }
-            finally
-            {
-                if (csvWriter != null)
-                {
-                    csvWriter.Flush();
-                    csvWriter.Dispose();
-                    Console.WriteLine("ReleaseWriter safely closed.");
-                }
-            }
-        }
-
-
         private static string? NormalizeFormat(IEnumerable<string> descriptions) =>
-            descriptions.Select(d => d.ToLower()).Select(d => d switch
+            descriptions.Select(d => d.ToLowerInvariant() switch
             {
                 "album" or "lp" or "mini-album" or "minimax" => "Album",
                 "ep" or "maxi-single" => "EP",
@@ -263,5 +163,5 @@ namespace XmlParsing
                 _ => null
             })
             .FirstOrDefault(f => f != null);
-        }
+    }
 }

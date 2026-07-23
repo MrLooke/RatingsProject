@@ -1,118 +1,64 @@
-﻿using System.Text;
 using System.Xml;
 
 namespace XmlParsing
 {
     internal static class ArtistsParser
     {
+        private static readonly HashSet<string> SkipTags = ["groups", "aliases", "namevariations", "urls"];
+
         internal static void ArtistsToCsv(string xmlFilePath, string csvFileName)
         {
-            int fileNumber = 1;
-            int count = 0;
-            int batchSize = 100000;
-            const string headers = "Id,Name,RealName,Profile";
-
-            StreamWriter csvWriter = new StreamWriter($"{csvFileName}_{fileNumber}.csv", false, Encoding.UTF8);
-            csvWriter.WriteLine(headers);
-
+            using var csv = new BatchedCsvWriter(csvFileName, "Id,Name,RealName,Profile");
             using var xmlReader = XmlReader.Create(xmlFilePath, new XmlReaderSettings
             {
                 IgnoreWhitespace = true
             });
 
-            try
+            while (xmlReader.Read())
             {
-                HashSet<string> skipTags = new HashSet<string>(["groups", "aliases", "namevariations", "urls"]);
-                while (xmlReader.Read())
-                {
-                    Artist artist = new Artist();
-                    bool abort = false;
-                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "artist")
-                    {
-                        using var innerReader = xmlReader.ReadSubtree();
-                        while (innerReader.Read())
-                        {
-                            if (innerReader.NodeType == XmlNodeType.Element)
-                            {
-                                if (skipTags.Contains(innerReader.Name))
-                                {
-                                    innerReader.Skip();
-                                    continue;
-                                }
+                if (xmlReader.NodeType != XmlNodeType.Element || xmlReader.Name != "artist") continue;
 
-                                if(innerReader.Depth == 1)
-                                {
-                                    string currentTag = innerReader.Name;
-                                    switch (currentTag)
-                                    {
-                                        case "id":
-                                            Helpers.ParseIntAndSet(innerReader.ReadString(), (val) => artist.Id = val);
-                                            break;
-                                        case "name":
-                                            artist.Name = innerReader.ReadString();
-                                            break;
-                                        case "realname":
-                                            artist.RealName = innerReader.ReadString();
-                                            break;
-                                        case "profile":
-                                            artist.Profile = innerReader.ReadString();
-                                            break;
-                                        case "data_quality":
-                                            abort = innerReader.ReadString() == "Needs Major Changes";
-                                            break;
-                                    }
-                                }
-                            }
-                        }
+                int id = 0;
+                string name = "", realName = "", profile = "";
+                bool lowQuality = false;
+
+                using var innerReader = xmlReader.ReadSubtree();
+                while (innerReader.Read())
+                {
+                    while (innerReader.NodeType == XmlNodeType.Element && SkipTags.Contains(innerReader.Name))
+                    {
+                        innerReader.Skip();
                     }
 
-                    if (!abort && artist.Id != 0 && !string.IsNullOrEmpty(artist.Name))
+                    if (innerReader.NodeType != XmlNodeType.Element) continue;
+
+                    if (innerReader.Depth != 1) continue;
+
+                    switch (innerReader.Name)
                     {
-                        string safeName = artist.Name?.Replace("\"", "\"\"") ?? "";
-                        string safeRealName = artist.RealName?.Replace("\"", "\"\"") ?? "";
-                        string safeProfile = artist.Profile?.Replace("\"", "\"\"") ?? "";
-
-                        csvWriter.WriteLine($"{artist.Id},\"{safeName}\",\"{safeRealName}\",\"{safeProfile}\"");
-                        count++;
-
-                        if (count == batchSize)
-                        {
-                            csvWriter.Dispose();
-
-                            fileNumber++;
-                            csvWriter = new StreamWriter($"{csvFileName}_{fileNumber}.csv", false, Encoding.UTF8);
-                            csvWriter.WriteLine(headers);
-                            count = 0;
-                        }
+                        case "id":
+                            id = Helpers.ParseIntOrNull(innerReader.ReadString()) ?? 0;
+                            break;
+                        case "name":
+                            name = innerReader.ReadString();
+                            break;
+                        case "realname":
+                            realName = innerReader.ReadString();
+                            break;
+                        case "profile":
+                            profile = innerReader.ReadString();
+                            break;
+                        case "data_quality":
+                            lowQuality = innerReader.ReadString() == "Needs Major Changes";
+                            break;
                     }
                 }
-            }
-            catch(XmlException ex)
-            {
-                Console.WriteLine($"\nFATAL XML ERROR: {ex.Message}");
-                Console.WriteLine($"Failed near Line: {ex.LineNumber}, Position: {ex.LinePosition}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"\nUNEXPECTED ERROR: {ex.Message}");
-            }
-            finally
-            {
-                if (csvWriter != null)
+
+                if (!lowQuality && id != 0 && !string.IsNullOrEmpty(name))
                 {
-                    csvWriter.Flush();
-                    csvWriter.Dispose();
-                    Console.WriteLine("ArtistWriter safely closed.");
+                    csv.WriteLine($"{id},\"{name.EscapeCsv()}\",\"{realName.EscapeCsv()}\",\"{profile.EscapeCsv()}\"");
                 }
             }
         }
-    }
-
-    internal class Artist
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public string? RealName { get; set; } = "";
-        public string? Profile { get; set; }
     }
 }
