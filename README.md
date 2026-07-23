@@ -63,6 +63,91 @@ See [Roadmap](#roadmap) below.
 
 ---
 
+## Getting Started
+ 
+### Prerequisites
+ 
+- [Docker](https://www.docker.com/) and Docker Compose
+- .NET SDK (for running EF Core CLI commands)
+### Setup
+ 
+1. Clone the repository
+```bash
+   git clone <repo-url>
+   cd MediaBoard
+```
+ 
+2. Generate a JWT signing key. In PowerShell:
+```powershell
+   [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Maximum 256 }))
+```
+   Copy the output — you'll use it as `JWT_KEY` below.
+ 
+3. Create a `.env` file in the project root with the required secrets:
+```env
+   POSTGRES_USER=mediadb_dev
+   POSTGRES_PASSWORD=your-password-here
+   POSTGRES_DB=mediadb
+   JWT_KEY=your-generated-signing-key
+ 
+   CONNECTION_STRING=Host=db;Port=5432;Database=mediadb;Username=mediadb_dev;Password=your-password-here
+ 
+   VITE_API_URL=http://localhost:8080
+   ALLOWED_ORIGIN=http://localhost:5173
+```
+   `CONNECTION_STRING` must use `Host=db` (the Compose service name), not `localhost` — the API container reaches Postgres over the Docker network, not through the host.
+ 
+4. Build and start all services:
+```bash
+   docker compose up --build
+```
+ 
+5. Restore packages inside the API container, then apply database migrations:
+```bash
+   docker compose exec api dotnet restore
+   docker compose exec api dotnet ef database update
+```
+ 
+6. Download the Discogs data dumps and place them for parsing:
+   - Go to [data.discogs.com](https://data.discogs.com/) and download the latest **Artists**, **Masters**, and **Releases** `.xml.gz` dumps
+   - Rename them to `artists.xml.gz`, `masters.xml.gz`, and `releases.xml.gz` — no need to decompress, all three parsers stream directly from `.gz`
+   - Move all three files into `XmlParsing/XmlFiles/` (create the folder if it doesn't exist):
+```
+     XmlParsing/
+       XmlFiles/
+         artists.xml.gz
+         masters.xml.gz
+         releases.xml.gz
+```
+ 
+7. Run the XML parser to convert the dumps into CSVs:
+```bash
+   cd XmlParsing
+   dotnet run
+```
+   This runs the full parse — releases, artists, and masters — and writes CSVs to `XmlParsing/Exports/`.
+ 
+8. Create `DataImportToPostgres/appsettings.json` with a connection string pointed at your **host** machine (this project runs outside Docker, connecting to Postgres via its published port, not the Docker network — use `localhost`, not `db`):
+```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Host=localhost;Port=5432;Database=mediadb;Username=mediadb_dev;Password=your-password-here;CommandTimeout=180"
+     }
+   }
+```
+ 
+9. Run the import tool from `DataImportToPostgres` — this requires two separate runs, in order:
+```bash
+   cd ../DataImportToPostgres
+   dotnet run full
+   dotnet run
+```
+   `dotnet run full` performs the full entity/relation import (artists, albums, genres, styles, and their join tables) and must run first, since the format backfill below depends on albums already existing. `dotnet run` (no argument) then backfills the `format` column on the `album` table from the parsed release data.
+ 
+The frontend, API, and PostgreSQL database will all be running as separate containers, networked together via Docker Compose.
+ 
+---
+
 ## Architecture Notes
 
 - **Auth:** Access tokens are short-lived JWTs delivered via `httpOnly`, `Secure` cookies (disabled in development). Refresh tokens are long-lived, stored server-side, and rotated on each use — the old token is deleted rather than flagged, so token validity is a simple existence check.
