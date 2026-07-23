@@ -28,6 +28,7 @@ interface Album {
 	id: number;
 	title: string;
 	averageRating: number;
+	userRating?: number;
 	year?: number;
 	format?: string | null;
 }
@@ -40,7 +41,9 @@ export interface ArtistPage {
 }
 
 export const getArtistPage = async (artistId: number): Promise<ArtistPage> => {
-	const response = await fetch(`${apiUrl}/artist/${artistId}`);
+	const response = await fetch(`${apiUrl}/artist/${artistId}`, {
+		credentials: "include",
+	});
 
 	if (!response.ok) {
 		throw new Error("Error getting artist's information.");

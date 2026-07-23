@@ -1,6 +1,6 @@
 ﻿namespace MediaBoard.Server.Features.Artists.ArtistPage
 {
-    public record AlbumDTO(int Id, string Title, int? Year, string? Format, double? averageRating)
+    public record AlbumDTO(int Id, string Title, int? Year, string? Format, double? averageRating, short? userRating)
     {
     }
 }

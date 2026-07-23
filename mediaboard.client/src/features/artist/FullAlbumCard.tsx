@@ -7,6 +7,7 @@ import ImageWithDefault from "@/components/ImageWithDefault";
 import DefaultAlbumCover from "@/assets/music-album.svg?react";
 import RatingDialog from "./RatingDialog";
 import RatingBadge from "@/components/RatingBadge";
+import StarRating from "@/components/StarRating";
 
 const FullAlbumCard = ({
 	albumId,
@@ -15,6 +16,7 @@ const FullAlbumCard = ({
 	format,
 	imageSource,
 	rating,
+	userRating,
 }: {
 	albumId: number;
 	title: string;
@@ -22,6 +24,7 @@ const FullAlbumCard = ({
 	format?: string | null;
 	imageSource?: string;
 	rating?: number;
+	userRating?: number;
 }) => {
 	const { user } = useAuth();
 	const navigate = useNavigate();
@@ -51,7 +54,12 @@ const FullAlbumCard = ({
 					</div>
 					<div className={styles.albumFooter}>
 						{/* User's own rating will go here */}
-						<div className={styles.rating}>No rating yet</div>
+						{userRating ? (
+							<StarRating rating={userRating} />
+						) : (
+							<div className={styles.rating}>No rating yet</div>
+						)}
+
 						{rating ? (
 							<RatingBadge
 								rating={rating}

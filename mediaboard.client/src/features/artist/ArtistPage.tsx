@@ -101,6 +101,7 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 								albumId={album.id}
 								title={album.title}
 								rating={album.averageRating}
+								userRating={album.userRating}
 								year={album.year?.toString()}
 								format={album.format}
 							/>

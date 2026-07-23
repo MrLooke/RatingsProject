@@ -220,3 +220,50 @@
 .ratingBadge:hover {
 	background-color: var(--primary-muted-hover);
 }
+
+.starRating {
+	display: flex;
+	gap: 2px;
+}
+
+.starRatingStar {
+	position: relative;
+	width: 18px;
+	height: 18px;
+}
+
+.starRatingEmpty {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	color: var(--border);
+}
+
+.starRatingFill {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+.starRatingFilled {
+	width: 18px;
+	height: 18px;
+	color: var(--secondary);
+	fill: var(--secondary);
+}
+
+.starRatingFull {
+	width: 100%;
+}
+
+.starRatingHalf {
+	width: 50%;
+}
+
+.starRatingNone {
+	width: 0;
+}

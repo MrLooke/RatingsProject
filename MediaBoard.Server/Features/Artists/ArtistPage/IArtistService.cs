@@ -2,6 +2,6 @@
 {
     public interface IArtistService
     {
-        Task<ArtistPageDTO> GetArtistDetailsAsync(int artistId);
+        Task<ArtistPageDTO> GetArtistDetailsAsync(int artistId, int? userId = null);
     }
 }
