@@ -13,10 +13,10 @@ foreach (string dir in exportDirs)
 }
 
 Run("Release formats", () => ReleaseParser.ReleasesToCsv("./XmlFiles/releases.xml.gz", "Exports/releases/releases"));
-Run("Artists", () => ArtistsParser.ArtistsToCsv("./XmlFiles/artists.xml", "Exports/artists/artists"));
-Run("Albums", () => MastersParser.AlbumsToCsv("./XmlFiles/masters.xml", "Exports/albums/albums"));
-Run("Album-artist relations", () => MastersParser.AlbumsToArtistsCsv("./XmlFiles/masters.xml", "Exports/albums_artists/albums_artists"));
-Run("Genres and styles", () => MastersParser.AlbumStylesGenresToCsv("./XmlFiles/masters.xml", "Exports/"));
+Run("Artists", () => ArtistsParser.ArtistsToCsv("./XmlFiles/artists.xml.gz", "Exports/artists/artists"));
+Run("Albums", () => MastersParser.AlbumsToCsv("./XmlFiles/masters.xml.gz", "Exports/albums/albums"));
+Run("Album-artist relations", () => MastersParser.AlbumsToArtistsCsv("./XmlFiles/masters.xml.gz", "Exports/albums_artists/albums_artists"));
+Run("Genres and styles", () => MastersParser.AlbumStylesGenresToCsv("./XmlFiles/masters.xml.gz", "Exports/"));
 
 static void Run(string step, Action parse)
 {

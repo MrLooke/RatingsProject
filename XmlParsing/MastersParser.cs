@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Text;
 using System.Xml;
 
@@ -8,10 +9,12 @@ namespace XmlParsing
         private static readonly HashSet<string> AlbumSkipTags = ["genres", "styles", "videos"];
         private static readonly HashSet<string> GenreStyleSkipTags = ["videos", "artists"];
 
-        internal static void AlbumsToCsv(string xmlFilePath, string csvFileName)
+        internal static void AlbumsToCsv(string xmlZipPath, string csvFileName)
         {
             using var csv = new BatchedCsvWriter(csvFileName, "Id,MainId,Title,Year,ImageUrl");
-            using var xmlReader = XmlReader.Create(xmlFilePath, new XmlReaderSettings
+            using var fileStream = File.OpenRead(xmlZipPath);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var xmlReader = XmlReader.Create(gzipStream, new XmlReaderSettings
             {
                 IgnoreWhitespace = true
             });
@@ -64,10 +67,12 @@ namespace XmlParsing
             }
         }
 
-        internal static void AlbumsToArtistsCsv(string xmlFilePath, string csvFileName)
+        internal static void AlbumsToArtistsCsv(string xmlZipPath, string csvFileName)
         {
             using var csv = new BatchedCsvWriter(csvFileName, "AlbumId,ArtistId");
-            using var xmlReader = XmlReader.Create(xmlFilePath, new XmlReaderSettings
+            using var fileStream = File.OpenRead(xmlZipPath);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var xmlReader = XmlReader.Create(gzipStream, new XmlReaderSettings
             {
                 IgnoreWhitespace = true
             });
@@ -101,7 +106,7 @@ namespace XmlParsing
             }
         }
 
-        internal static void AlbumStylesGenresToCsv(string xmlFilePath, string targetFolder)
+        internal static void AlbumStylesGenresToCsv(string xmlZipPath, string targetFolder)
         {
             const string genrePath = "genres/genres";
             const string stylePath = "styles/styles";
@@ -114,7 +119,10 @@ namespace XmlParsing
 
             using var genreCsv = new BatchedCsvWriter(targetFolder + albumGenrePath, "AlbumId,GenreId");
             using var styleCsv = new BatchedCsvWriter(targetFolder + albumStylePath, "AlbumId,StyleId");
-            using var xmlReader = XmlReader.Create(xmlFilePath, new XmlReaderSettings
+
+            using var fileStream = File.OpenRead(xmlZipPath);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var xmlReader = XmlReader.Create(gzipStream, new XmlReaderSettings
             {
                 IgnoreWhitespace = true
             });

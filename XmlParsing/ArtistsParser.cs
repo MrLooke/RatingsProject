@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Xml;
 
 namespace XmlParsing
@@ -6,10 +7,12 @@ namespace XmlParsing
     {
         private static readonly HashSet<string> SkipTags = ["groups", "aliases", "namevariations", "urls"];
 
-        internal static void ArtistsToCsv(string xmlFilePath, string csvFileName)
+        internal static void ArtistsToCsv(string xmlZipPath, string csvFileName)
         {
             using var csv = new BatchedCsvWriter(csvFileName, "Id,Name,RealName,Profile");
-            using var xmlReader = XmlReader.Create(xmlFilePath, new XmlReaderSettings
+            using var fileStream = File.OpenRead(xmlZipPath);
+            using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
+            using var xmlReader = XmlReader.Create(gzipStream, new XmlReaderSettings
             {
                 IgnoreWhitespace = true
             });

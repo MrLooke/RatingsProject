@@ -12,7 +12,6 @@ namespace MediaBoard.Server.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            /*
             migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:PostgresExtension:pg_trgm", ",,");
 
@@ -228,13 +227,11 @@ namespace MediaBoard.Server.Migrations
                 name: "IX_rating_user_id",
                 table: "rating",
                 column: "user_id");
-            */
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            /*
             migrationBuilder.DropTable(
                 name: "album_artist");
 
@@ -264,7 +261,6 @@ namespace MediaBoard.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "app_user");
-            */
         }
     }
 }
