@@ -159,7 +159,7 @@ The frontend, API, and PostgreSQL database will all be running as separate conta
 ## Roadmap
 
 1. ~Parse Discogs releases dump → backfill `format` column on masters table~
-2. Album ratings frontend
+2. ~Album ratings frontend~
 3. Track import from releases dump; establish album → track relationship
 4. Song ratings with auto-aggregate to album score + manual override
 5. Full album rating flow (per-song ratings → aggregated score)
@@ -178,7 +178,3 @@ The frontend, API, and PostgreSQL database will all be running as separate conta
 **Ongoing:** Database optimization pass — indexes, denormalization, and materialized views — deferred until the application reaches a stable feature set. The album → track join is a known candidate for denormalization once track data is imported.
 
 ---
-
-## License
-
-This is a personal learning project. License TBD.
