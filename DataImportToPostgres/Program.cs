@@ -87,7 +87,7 @@ async Task RunFullImport()
 
 async Task ImportSongs()
 {
-    var songSchema = new Schema("../XmlParsing/Exports/songs/", ["main_id", "title", "position", "duration"], ["INT", "TEXT", "TEXT", "TEXT"]);
+    var songSchema = new Schema("../XmlParsing/Exports/songs/", ["main_id", "title", "position", "duration"], ["INT", "TEXT", "TEXT", "VARCHAR(20)"]);
 
     await using var connection = new NpgsqlConnection(connectionString);
     await connection.OpenAsync();

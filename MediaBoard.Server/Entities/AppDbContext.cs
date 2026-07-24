@@ -251,9 +251,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.AlbumId).HasColumnName("album_id");
             entity.Property(e => e.Title).HasColumnName("title");
-            entity.Property(e => e.Position)
-                .HasMaxLength(20)
-                .HasColumnName("position");
+            entity.Property(e => e.Position).HasColumnName("position");
             entity.Property(e => e.Duration)
                 .HasMaxLength(20)
                 .HasColumnName("duration");
