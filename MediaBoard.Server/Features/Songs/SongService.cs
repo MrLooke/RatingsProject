@@ -18,7 +18,7 @@ namespace MediaBoard.Server.Features.Songs
                 .Songs
                 .AsNoTracking()
                 .Where(s => s.AlbumId == albumId)
-                .Select(s => new ReleaseSongResult { Title = s.Title, Duration = s.Duration })
+                .Select(s => new ReleaseSongResult { Id = s.Id, Title = s.Title, Duration = s.Duration })
                 .ToListAsync();
 
             return albumSongs;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MediaBoard.Server.Entities;
 
@@ -10,6 +11,9 @@ public partial class Song
     public int AlbumId { get; set; }
 
     public string Title { get; set; } = null!;
+
+    [Column("order")]
+    public int Order { get; set; }
 
     public string? Position { get; set; }
 
