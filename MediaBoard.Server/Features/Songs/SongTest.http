@@ -1,0 +1,8 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@host = localhost
+@port = 8080
+@baseUrl = http://{{host}}:{{port}}
+
+### Songs in a Release
+GET {{baseUrl}}/song/3540664
+Accept: application/json
