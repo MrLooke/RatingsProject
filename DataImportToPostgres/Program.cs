@@ -87,7 +87,7 @@ async Task RunFullImport()
 
 async Task ImportSongs()
 {
-    var songSchema = new Schema("../XmlParsing/Exports/songs/", ["main_id", "title", "position", "duration"], ["INT", "TEXT", "TEXT", "VARCHAR(20)"]);
+    var songSchema = new Schema("../XmlParsing/Exports/songs/", ["main_id", "title", "track_number", "position", "duration"], ["INT", "TEXT", "INT", "TEXT", "VARCHAR(20)"]);
 
     await using var connection = new NpgsqlConnection(connectionString);
     await connection.OpenAsync();
@@ -100,8 +100,8 @@ async Task ImportSongs()
     try
     {
         await using var insertCommand = new NpgsqlCommand($@"
-            INSERT INTO song (album_id, title, position, duration)
-            SELECT t.main_id, t.title, t.position, t.duration
+            INSERT INTO song (album_id, title, track_number, position, duration)
+            SELECT t.main_id, t.title, t.track_number, t.position, t.duration
             FROM {tempTable} t
             INNER JOIN album a ON t.main_id = a.id;
         ", connection);

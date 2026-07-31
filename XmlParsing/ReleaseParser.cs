@@ -64,7 +64,7 @@ namespace XmlParsing
 
         internal static void SongsToCsv(string xmlZipPath, string csvFileName)
         {
-            using var csv = new BatchedCsvWriter(csvFileName, "MainId,Title,Position,Duration");
+            using var csv = new BatchedCsvWriter(csvFileName, "MainId,Title,Track_Number,Position,Duration");
             using var fileStream = File.OpenRead(xmlZipPath);
             using var gzipStream = new GZipStream(fileStream, CompressionMode.Decompress);
             using var xmlReader = XmlReader.Create(gzipStream, new XmlReaderSettings
@@ -108,10 +108,13 @@ namespace XmlParsing
 
                 seenMasters.Add(mainId);
 
+
+                int trackNumber = 1;
                 foreach (var track in tracks)
                 {
                     if (string.IsNullOrEmpty(track.Title)) continue;
-                    csv.WriteLine($"{mainId},\"{track.Title.EscapeCsv()}\",\"{track.Position.EscapeCsv()}\",\"{track.Duration.EscapeCsv()}\"");
+                    csv.WriteLine($"{mainId},\"{track.Title.EscapeCsv()}\",{trackNumber},\"{track.Position.EscapeCsv()}\",\"{track.Duration.EscapeCsv()}\"");
+                    trackNumber++;
                 }
             }
         }
