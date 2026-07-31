@@ -1,6 +1,4 @@
-﻿using MediaBoard.Server.Features.Songs;
-
-namespace MediaBoard.Server.Features.Album
+﻿namespace MediaBoard.Server.Features.Album
 {
     public interface IAlbumService
     {
