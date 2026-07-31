@@ -15,7 +15,7 @@ namespace MediaBoard.Server.Controllers
         }
 
         [HttpGet("{albumid:int}")]
-        public async Task<ActionResult<IEnumerable<ReleaseSongResult>>> GetSongsByAldum(int albumId)
+        public async Task<ActionResult<IEnumerable<ReleaseSongResult>>> GetSongsByAlbum(int albumId)
         {
             IEnumerable<ReleaseSongResult> songs = await _songService.GetSongsInAlbumAsync(albumId);
             return Ok(songs);

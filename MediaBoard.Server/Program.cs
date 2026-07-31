@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using MediaBoard.Server.Features.Songs;
+using MediaBoard.Server.Features.Album;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -39,6 +40,7 @@ builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<IArtistService, ArtistService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<ISongService, SongService>();
+builder.Services.AddScoped<IAlbumService, AlbumService>();
 
 //DB Context
 builder.Services.AddDbContextPool<AppDbContext>(opt => opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
