@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import AlbumPage from "@/features/album/AlbumPage";
 
 export const Route = createFileRoute("/album/$albumId")({
 	component: RouteComponent,
@@ -6,5 +7,5 @@ export const Route = createFileRoute("/album/$albumId")({
 
 function RouteComponent() {
 	const { albumId } = Route.useParams();
-	return <div>Hello "/album/{albumId}"!</div>;
+	return <AlbumPage albumId={parseInt(albumId)} />;
 }
