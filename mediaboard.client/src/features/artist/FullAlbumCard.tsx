@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, Link } from "@tanstack/react-router";
 import styles from "@/features/artist/artist.module.css";
 import Card from "@/components/Cards/Card";
 import ImageWithDefault from "@/components/ImageWithDefault";
@@ -31,22 +31,28 @@ const FullAlbumCard = ({
 	const navigate = useNavigate();
 	const [dialogOpen, setDialogOpen] = useState(false);
 
+	const albumLink = `/album/${albumId}`;
+
 	return (
 		<>
 			<Card className={styles.albumCard}>
-				<ImageWithDefault
-					containerClass={styles.imageContainer}
-					src={imageSource}
-					alt={title + "Cover Image/Art"}
-				>
-					<DefaultAlbumCover />
-				</ImageWithDefault>
+				<Link to={albumLink}>
+					<ImageWithDefault
+						containerClass={styles.imageContainer}
+						src={imageSource}
+						alt={title + "Cover Image/Art"}
+					>
+						<DefaultAlbumCover />
+					</ImageWithDefault>
+				</Link>
 
 				<div className={styles.info}>
 					<div className={styles.headers}>
-						<h2 aria-label={title} title={title}>
-							{title}
-						</h2>
+						<Link to={albumLink}>
+							<h2 aria-label={title} title={title}>
+								{title}
+							</h2>
+						</Link>
 						{year && (
 							<p>
 								{year} · {format ?? "Misc"}
