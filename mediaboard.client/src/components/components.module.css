@@ -122,7 +122,7 @@
 	background: var(--bg);
 }
 
-.baseCard:hover {
+.baseWithHover:hover {
 	background: var(--bg-light);
 }
 
@@ -290,4 +290,40 @@
 
 .starRatingNone {
 	width: 0;
+}
+
+.listCard {
+	height: fit-content;
+	border: 1px solid var(--border-muted);
+	border-radius: 10px;
+	background: var(--bg);
+
+	.listHeader {
+		box-sizing: border-box;
+		width: 100%;
+		padding: 0px 20px;
+	}
+
+	.listItem {
+		position: relative;
+		height: fit-content;
+
+		&::after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			left: 20px;
+			width: calc(100% - 40px);
+			border-bottom: 1px solid var(--border-muted);
+		}
+
+		&:last-child::after {
+			border: 0;
+		}
+	}
+
+	.listItemClickable:hover {
+		cursor: pointer;
+		background: var(--bg-light);
+	}
 }

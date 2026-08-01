@@ -5,6 +5,9 @@ import FullAlbumCard from "./FullAlbumCard";
 import SongListItem from "./SongListItem";
 import useArtistPage from "@/hooks/api/useArtistPage";
 import { mockPopularSongs } from "@/mock/songData";
+import ListCard from "@/components/Lists/ListCard";
+import ListHeader from "@/components/Lists/ListHeader";
+import ListItem from "@/components/Lists/ListItem";
 
 const FORMAT_FILTERS: Record<string, (format?: string | null) => boolean> = {
 	ALL: () => true,
@@ -108,14 +111,16 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 					className={styles.artistImage}
 				/>
 
-				<div className={styles.songList}>
-					<h2>Popular Songs</h2>
+				<ListCard className={styles.songList}>
+					<ListHeader alignment="center">Popular Songs</ListHeader>
 					{mockPopularSongs
 						.sort((a, b) => b.rating - a.rating)
 						.map((song) => (
-							<SongListItem key={song.id} {...song} />
+							<ListItem>
+								<SongListItem key={song.id} {...song} />
+							</ListItem>
 						))}
-				</div>
+				</ListCard>
 			</div>
 		</div>
 	);

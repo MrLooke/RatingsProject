@@ -35,7 +35,7 @@ const FullAlbumCard = ({
 
 	return (
 		<>
-			<Card className={styles.albumCard}>
+			<Card className={styles.albumCard} hasHover>
 				<Link to={albumLink}>
 					<ImageWithDefault
 						containerClass={styles.imageContainer}

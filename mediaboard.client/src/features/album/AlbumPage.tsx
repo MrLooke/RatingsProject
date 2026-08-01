@@ -1,9 +1,11 @@
 import useAlbumPage from "@/hooks/api/useAlbumPage";
-import Card from "@/components/Cards/Card";
 import ArtistSmallCard from "@/components/Cards/ArtistSmallCard";
 import styles from "@/features/album/album.module.css";
 import ImageWithDefault from "@/components/ImageWithDefault";
 import DefaultAlbumCover from "@/assets/music-album.svg?react";
+import ListCard from "@/components/Lists/ListCard";
+import ListHeader from "@/components/Lists/ListHeader";
+import ListItem from "@/components/Lists/ListItem";
 
 const AlbumPage = ({ albumId }: { albumId: number }) => {
 	const { data, error, isPending, isError } = useAlbumPage(albumId);
@@ -36,15 +38,17 @@ const AlbumPage = ({ albumId }: { albumId: number }) => {
 				>
 					<DefaultAlbumCover />
 				</ImageWithDefault>
-				<Card>
-					{" "}
+				<ListCard>
+					<ListHeader alignment="center">Artists</ListHeader>
 					{data?.artists.map((artist) => (
-						<ArtistSmallCard
-							artistId={artist.id}
-							name={artist.name}
-						/>
+						<ListItem>
+							<ArtistSmallCard
+								artistId={artist.id}
+								name={artist.name}
+							/>
+						</ListItem>
 					))}
-				</Card>
+				</ListCard>
 			</div>
 		</div>
 	);

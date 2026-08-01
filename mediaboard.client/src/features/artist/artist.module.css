@@ -229,10 +229,6 @@
 }
 
 .songList {
-	height: fit-content;
-	background: var(--bg);
-	border: 1px solid var(--border-muted);
-	border-radius: 10px;
 	grid-row: 8;
 }
 
@@ -268,18 +264,5 @@
 		top: 10px;
 		right: 20px;
 		font-size: 0.85rem;
-	}
-
-	&::after {
-		content: "";
-		position: absolute;
-		bottom: 0;
-		left: 20px;
-		width: 260px;
-		border-bottom: 1px solid var(--border-muted);
-	}
-
-	&:last-child::after {
-		border: 0;
 	}
 }
