@@ -1,7 +1,17 @@
 .albumBody {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+
 	.mainColumn {
+		flex-grow: 1;
+		max-width: 650px;
+		margin: 20px;
 	}
 
 	.sideBar {
+		width: 300px;
+		min-width: 250px;
+		margin: 20px;
 	}
 }
