@@ -17,9 +17,13 @@ const ArtistSmallCard = ({
 	const artistLink = `/artist/${artistId}`;
 
 	return (
-		<Link to={artistLink}>
+		<Link className={styles.artistCardLink} to={artistLink}>
 			<div className={styles.artistSmallCard} {...rest}>
-				<ProfileImage src={imageUrl} alt={name + " Artist Photo"} />
+				<ProfileImage
+					className={styles.artistIcon}
+					src={imageUrl}
+					alt={name + " Artist Photo"}
+				/>
 				<p>{name}</p>
 			</div>
 		</Link>

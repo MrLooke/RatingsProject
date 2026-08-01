@@ -182,7 +182,51 @@
 	}
 }
 
+.artistCardLink {
+	text-decoration: none;
+}
+
 .artistSmallCard {
+	display: flex;
+	justify-content: left;
+	align-items: center;
+
+	box-sizing: border-box;
+	min-width: 200px;
+	width: 100%;
+	height: 50px;
+	padding: 5px 0px;
+
+	.artistIcon {
+		aspect-ratio: 1 / 1;
+		object-fit: contain;
+		height: 100%;
+
+		overflow: hidden;
+
+		background-color: var(--primary-muted);
+		border: 1px solid var(--primary-bold);
+		border-radius: 5px;
+
+		img {
+			object-fit: cover;
+			width: 100%;
+			height: 100%;
+		}
+
+		svg {
+			width: 60%;
+			height: 60%;
+			margin: 20%;
+			color: var(--primary);
+		}
+	}
+
+	p {
+		margin-left: 5px;
+		text-decoration: none;
+		color: var(--text);
+	}
 }
 
 .ratingBadge {
@@ -297,11 +341,11 @@
 	border: 1px solid var(--border-muted);
 	border-radius: 10px;
 	background: var(--bg);
+	padding: 0px 20px 20px 20px;
 
 	.listHeader {
 		box-sizing: border-box;
 		width: 100%;
-		padding: 0px 20px;
 	}
 
 	.listItem {
