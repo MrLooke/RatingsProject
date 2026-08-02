@@ -31,9 +31,6 @@
 	height: 300px;
 	object-fit: contain;
 	grid-row: 2;
-	border-radius: 12px;
-	background-color: var(--primary-muted);
-	color: var(--primary-bold);
 
 	&:has(svg) {
 		border: 1px solid var(--primary-bold);

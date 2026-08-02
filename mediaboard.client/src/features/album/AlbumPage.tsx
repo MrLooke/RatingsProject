@@ -8,6 +8,7 @@ import ListCard from "@/components/Lists/ListCard";
 import ListHeader from "@/components/Lists/ListHeader";
 import ListItem from "@/components/Lists/ListItem";
 import SongTable from "@/features/album/SongTable";
+import { Link } from "@tanstack/react-router";
 
 const AlbumPage = ({ albumId }: { albumId: number }) => {
 	const { data, error, isPending, isError } = useAlbumPage(albumId);
@@ -27,10 +28,30 @@ const AlbumPage = ({ albumId }: { albumId: number }) => {
 		return <div className={styles.albumBody}>{bodyMessage}</div>;
 	}
 
+	const format = data.format ?? "Misc";
+	const subHeader = (
+		<>
+			{data.year ? data.year + " · " : ""}
+			{format}
+			{data.artists.map((a) => {
+				const artistLink = `/artist/${a.id}`;
+				return (
+					<>
+						{" · "}
+						<Link to={artistLink}>{a.name}</Link>
+					</>
+				);
+			})}
+		</>
+	);
+
 	return (
 		<div className={styles.albumBody}>
 			<div className={styles.mainColumn}>
-				<h1>{data.title}</h1>
+				<div className={styles.headerContainer}>
+					<h1>{data.title}</h1>
+					<p className={styles.infoSubHeader}>{subHeader}</p>
+				</div>
 				<SongTable songs={data.songs} />
 			</div>
 			<div className={styles.sideBar}>

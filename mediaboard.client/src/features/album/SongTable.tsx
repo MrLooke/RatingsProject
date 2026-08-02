@@ -17,9 +17,13 @@ const SongTable = ({ songs }: { songs: AlbumSong[] }) => {
 					<div className={styles.songRow} key={song.id}>
 						<p className={styles.trackNumber}>{song.trackNumber}</p>
 						<div className={styles.songTitleCell}>
-							<p className={styles.songTitle}>{song.title}</p>
+							<p className={styles.songTitle} title={song.title}>
+								{song.title}
+							</p>
 							{song.duration && (
-								<p className={styles.songDuration}>{song.duration}</p>
+								<p className={styles.songDuration}>
+									{song.duration}
+								</p>
 							)}
 						</div>
 						<div className={styles.averageRatingCell}>
@@ -30,7 +34,9 @@ const SongTable = ({ songs }: { songs: AlbumSong[] }) => {
 							)}
 						</div>
 						<p className={styles.userRating}>
-							{userRating != null ? (userRating / 2).toFixed(2) : "-"}
+							{userRating != null
+								? (userRating / 2).toFixed(2)
+								: "-"}
 						</p>
 					</div>
 				);

@@ -16,6 +16,27 @@
 	}
 }
 
+.headerContainer {
+	* {
+		text-align: left;
+		font-weight: 500;
+	}
+
+	h1 {
+		margin: 0px;
+		font-size: clamp(1.5rem, 3vw, 2.5rem);
+	}
+
+	.infoSubHeader {
+		margin-top: 5px;
+		color: var(--text-dark);
+
+		a {
+			text-decoration: none;
+		}
+	}
+}
+
 .songTable {
 	width: 100%;
 	background: var(--bg-dark);
@@ -44,16 +65,25 @@
 		flex-direction: column;
 		gap: 2px;
 		min-width: 0;
-	}
 
-	.songTitle {
-		margin: 0;
-	}
+		* {
+			text-align: left;
+			font-weight: 500;
+		}
 
-	.songDuration {
-		margin: 0;
-		font-size: 0.85rem;
-		color: var(--text-muted);
+		.songTitle {
+			margin: 0;
+
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
+		.songDuration {
+			margin: 0;
+			font-size: 0.85rem;
+			color: var(--text-dark);
+		}
 	}
 
 	.averageRatingCell {
