@@ -67,3 +67,59 @@
 		color: var(--text-muted);
 	}
 }
+
+.coverImageCard {
+	padding: 20px;
+	margin-bottom: 20px;
+
+	.coverImage {
+		box-sizing: border-box;
+		aspect-ratio: 1 / 1;
+		width: 100%;
+		height: unset;
+		border-radius: 12px;
+		background-color: var(--primary-muted);
+		color: var(--primary-bold);
+
+		&:has(svg) {
+			border: 1px solid var(--primary-bold);
+		}
+
+		img {
+			border-radius: 12px;
+		}
+
+		svg {
+			width: 50%;
+		}
+	}
+
+	.infoItem {
+		position: relative;
+		display: flex;
+		justify-content: space-between;
+
+		font-weight: 600;
+
+		p {
+			margin-top: 12px;
+			margin-bottom: 8px;
+		}
+
+		.label {
+			color: var(--text-dark);
+		}
+
+		&::after {
+			content: "";
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			border-bottom: 1px solid var(--border-muted);
+		}
+
+		&:last-child::after {
+			border: 0;
+		}
+	}
+}

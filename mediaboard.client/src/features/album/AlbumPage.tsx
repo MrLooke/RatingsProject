@@ -3,6 +3,7 @@ import ArtistSmallCard from "@/components/Cards/ArtistSmallCard";
 import styles from "@/features/album/album.module.css";
 import ImageWithDefault from "@/components/ImageWithDefault";
 import DefaultAlbumCover from "@/assets/music-album.svg?react";
+import Card from "@/components/Cards/Card";
 import ListCard from "@/components/Lists/ListCard";
 import ListHeader from "@/components/Lists/ListHeader";
 import ListItem from "@/components/Lists/ListItem";
@@ -33,16 +34,35 @@ const AlbumPage = ({ albumId }: { albumId: number }) => {
 				<SongTable songs={data.songs} />
 			</div>
 			<div className={styles.sideBar}>
-				<ImageWithDefault
-					src={data.imageUrl}
-					alt={data.title + " Cover Photo"}
-				>
-					<DefaultAlbumCover />
-				</ImageWithDefault>
+				<Card className={styles.coverImageCard}>
+					<ImageWithDefault
+						containerClass={styles.coverImage}
+						src={data.imageUrl}
+						alt={data.title + " Cover Photo"}
+					>
+						<DefaultAlbumCover />
+					</ImageWithDefault>
+
+					<div className="albumInfo">
+						<div className={styles.infoItem}>
+							<p className={styles.label}>Tracks</p>
+							<p>{data.songs.length}</p>
+						</div>
+						<div className={styles.infoItem}>
+							<p className={styles.label}>Ratings</p>
+							<p>128</p>
+						</div>
+						<div className={styles.infoItem}>
+							<p className={styles.label}>Average Rating</p>
+							<p>4.4</p>
+						</div>
+					</div>
+				</Card>
+
 				<ListCard>
 					<ListHeader alignment="center">Artists</ListHeader>
 					{data?.artists.map((artist) => (
-						<ListItem>
+						<ListItem clickable>
 							<ArtistSmallCard
 								artistId={artist.id}
 								name={artist.name}
