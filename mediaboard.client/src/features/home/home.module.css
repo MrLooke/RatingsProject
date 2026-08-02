@@ -69,6 +69,10 @@
 			border: 1px solid var(--primary-bold);
 			border-radius: 5px;
 
+			img {
+				border-radius: 5px;
+			}
+
 			svg {
 				width: 80px;
 				height: 80px;

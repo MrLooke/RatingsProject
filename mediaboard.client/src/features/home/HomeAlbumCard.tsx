@@ -1,5 +1,7 @@
 import styles from "./home.module.css";
-import ImageCard from "../../components/Cards/ImageCard";
+import componentStyles from "@/components/components.module.css";
+import ImageWithDefault from "@/components/ImageWithDefault";
+import DefaultAlbumCover from "@/assets/music-album.svg?react";
 import RatingBadge from "@/components/RatingBadge";
 
 interface HomeAlbumCardProps {
@@ -10,14 +12,19 @@ interface HomeAlbumCardProps {
 
 const HomeAlbumCard = ({ title, artist, rating }: HomeAlbumCardProps) => {
 	return (
-		<ImageCard
-			header={title}
-			subheader={artist}
-			className={styles.albumCard}
-			imageContainerClass={styles.albumImgContainer}
-		>
+		<div className={styles.albumCard}>
+			<ImageWithDefault
+				alt={title + " Cover Image"}
+				containerClass={styles.albumImgContainer}
+			>
+				<DefaultAlbumCover />
+			</ImageWithDefault>
+			<div className={componentStyles.footer}>
+				<h2>{title}</h2>
+				<h3>{artist}</h3>
+			</div>
 			<RatingBadge rating={rating} />
-		</ImageCard>
+		</div>
 	);
 };
 
