@@ -15,3 +15,55 @@
 		margin: 20px;
 	}
 }
+
+.songTable {
+	width: 100%;
+	background: var(--bg-dark);
+
+	.songRow {
+		display: grid;
+		grid-template-columns: 40px 1fr 65px 65px;
+		align-items: center;
+		gap: 10px;
+		padding: 10px 0;
+		border-bottom: 1px solid var(--border-muted);
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+
+	.trackNumber {
+		margin: 0;
+		text-align: center;
+		color: var(--text-muted);
+	}
+
+	.songTitleCell {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+
+	.songTitle {
+		margin: 0;
+	}
+
+	.songDuration {
+		margin: 0;
+		font-size: 0.85rem;
+		color: var(--text-muted);
+	}
+
+	.averageRatingCell {
+		display: flex;
+		justify-content: center;
+	}
+
+	.userRating {
+		margin: 0;
+		text-align: center;
+		color: var(--text-muted);
+	}
+}

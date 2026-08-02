@@ -6,6 +6,7 @@ import DefaultAlbumCover from "@/assets/music-album.svg?react";
 import ListCard from "@/components/Lists/ListCard";
 import ListHeader from "@/components/Lists/ListHeader";
 import ListItem from "@/components/Lists/ListItem";
+import SongTable from "@/features/album/SongTable";
 
 const AlbumPage = ({ albumId }: { albumId: number }) => {
 	const { data, error, isPending, isError } = useAlbumPage(albumId);
@@ -29,7 +30,7 @@ const AlbumPage = ({ albumId }: { albumId: number }) => {
 		<div className={styles.albumBody}>
 			<div className={styles.mainColumn}>
 				<h1>{data.title}</h1>
-				{JSON.stringify(data)}
+				<SongTable songs={data.songs} />
 			</div>
 			<div className={styles.sideBar}>
 				<ImageWithDefault
