@@ -1,4 +1,3 @@
-import DefaultCover from "@/assets/music-album.svg?react";
 import styles from "@/components/components.module.css";
 import { useState } from "react";
 
@@ -9,7 +8,12 @@ interface ImageDefaultProps extends React.HTMLAttributes<HTMLDivElement> {
 	containerClass?: string;
 }
 
-const ImageWithDefault = ({ src, alt, containerClass }: ImageDefaultProps) => {
+const ImageWithDefault = ({
+	src,
+	alt,
+	children,
+	containerClass,
+}: ImageDefaultProps) => {
 	const [error, setError] = useState(false);
 
 	if (!src || error) {
@@ -17,7 +21,7 @@ const ImageWithDefault = ({ src, alt, containerClass }: ImageDefaultProps) => {
 			<div
 				className={`${styles.defaultImageContainer} ${containerClass}`}
 			>
-				<DefaultCover stroke="currentColor" />
+				{children}
 			</div>
 		);
 	}

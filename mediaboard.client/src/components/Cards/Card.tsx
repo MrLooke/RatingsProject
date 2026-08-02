@@ -11,7 +11,7 @@ const Card = ({
 	className = "",
 	...rest
 }: CardProps) => {
-	const combinedClasses = `${styles.baseCard} ${className} ${hasHover ? styles.baseWithHover : ""}`;
+	const combinedClasses = `${styles.baseCard} ${className} ${hasHover && styles.baseWithHover}`;
 	return (
 		<div className={combinedClasses} {...rest}>
 			{children}
