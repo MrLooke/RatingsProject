@@ -9,6 +9,13 @@ const getMockRating = (missingChance: number) =>
 const SongTable = ({ songs }: { songs: AlbumSong[] }) => {
 	return (
 		<div className={styles.songTable}>
+			{songs.length > 0 && (
+				<div className={styles.songTableHeader}>
+					<p className={styles.tracklistHeader}>Tracklist</p>
+					<p className={styles.avgHeader}>Avg</p>
+					<p className={styles.youHeader}>You</p>
+				</div>
+			)}
 			{songs.map((song) => {
 				const averageRating = getMockRating(0.15);
 				const userRating = getMockRating(0.4);

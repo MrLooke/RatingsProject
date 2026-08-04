@@ -17,6 +17,8 @@
 }
 
 .headerContainer {
+	margin-bottom: 30px;
+
 	* {
 		text-align: left;
 		font-weight: 500;
@@ -33,6 +35,10 @@
 
 		a {
 			text-decoration: none;
+
+			&:hover {
+				color: var(--text);
+			}
 		}
 	}
 }
@@ -40,6 +46,30 @@
 .songTable {
 	width: 100%;
 	background: var(--bg-dark);
+
+	.songTableHeader {
+		display: grid;
+		grid-template-columns: 40px 1fr 65px 65px;
+		gap: 10px;
+		padding: 0 0 8px 0;
+
+		p {
+			margin: 0;
+			color: var(--text-dark);
+			font-weight: 600;
+		}
+
+		.tracklistHeader {
+			grid-column: 1 / span 2;
+			text-transform: uppercase;
+			text-align: left;
+		}
+
+		.avgHeader,
+		.youHeader {
+			text-align: center;
+		}
+	}
 
 	.songRow {
 		display: grid;
