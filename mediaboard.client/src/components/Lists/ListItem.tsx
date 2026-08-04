@@ -5,10 +5,17 @@ interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
 	children: React.ReactNode;
 }
 
-const ListItem = ({ clickable = false, children, ...rest }: ListItemProps) => {
+const ListItem = ({
+	clickable = false,
+	className = "",
+	children,
+	...rest
+}: ListItemProps) => {
+	const combinedCLasses = `${styles.listItem} ${className}`;
+
 	return (
 		<div
-			className={`${styles.listItem} ${clickable && styles.listItemClickable}`}
+			className={`${combinedCLasses} ${clickable && styles.listItemClickable}`}
 			{...rest}
 		>
 			{children}

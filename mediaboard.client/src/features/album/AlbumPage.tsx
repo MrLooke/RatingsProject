@@ -83,7 +83,7 @@ const AlbumPage = ({ albumId }: { albumId: number }) => {
 				<ListCard>
 					<ListHeader alignment="center">Artists</ListHeader>
 					{data?.artists.map((artist) => (
-						<ListItem clickable>
+						<ListItem className={styles.artistListItem} clickable>
 							<ArtistSmallCard
 								artistId={artist.id}
 								name={artist.name}

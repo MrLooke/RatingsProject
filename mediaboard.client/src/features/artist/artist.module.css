@@ -258,7 +258,6 @@
 		width: fit-content;
 		margin: 0;
 		top: 10px;
-		left: 20px;
 
 		font-size: 1rem;
 		color: var(--text);
@@ -266,13 +265,12 @@
 
 	h4 {
 		top: 18px;
-		left: 20px;
 		font-size: 0.85rem;
 	}
 
 	.songRating {
 		top: 10px;
-		right: 20px;
+		right: 0px;
 		font-size: 0.85rem;
 	}
 }
