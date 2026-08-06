@@ -35,6 +35,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Song> Songs { get; set; }
 
+    public virtual DbSet<SongRating> SongRatings { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("pg_trgm");
@@ -259,6 +261,11 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.Album).WithMany(p => p.Songs)
                 .HasForeignKey(d => d.AlbumId)
                 .HasConstraintName("song_album_id_fkey");
+        });
+
+        modelBuilder.Entity<SongRating>(entity =>
+        {
+            entity.HasKey(r => new { r.UserId, r.SongId });
         });
 
         OnModelCreatingPartial(modelBuilder);
