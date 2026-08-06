@@ -116,15 +116,14 @@
 	display: flex;
 	align-items: center;
 
-	a {
-		text-decoration: none;
+	* {
+		text-decoration: none !important;
 		color: inherit;
 	}
 
 	.imageContainer {
 		aspect-ratio: 1 / 1;
-		max-width: 90px;
-		min-width: 50px;
+		flex: 0 0 clamp(50px, 20%, 90px);
 		height: auto;
 
 		border: 1px solid var(--primary-bold);
@@ -181,10 +180,6 @@
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
-
-				&:hover {
-					color: var(--primary);
-				}
 			}
 
 			p {

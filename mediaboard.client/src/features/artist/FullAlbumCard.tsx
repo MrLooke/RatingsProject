@@ -35,8 +35,8 @@ const FullAlbumCard = ({
 
 	return (
 		<>
-			<Card className={styles.albumCard} hasHover>
-				<Link to={albumLink}>
+			<Link to={albumLink} style={{ textDecoration: "none" }}>
+				<Card className={styles.albumCard} hasHover>
 					<ImageWithDefault
 						containerClass={styles.imageContainer}
 						src={imageSource}
@@ -44,49 +44,48 @@ const FullAlbumCard = ({
 					>
 						<DefaultAlbumCover />
 					</ImageWithDefault>
-				</Link>
 
-				<div className={styles.info}>
-					<div className={styles.headers}>
-						<Link to={albumLink}>
+					<div className={styles.info}>
+						<div className={styles.headers}>
 							<h2 aria-label={title} title={title}>
 								{title}
 							</h2>
-						</Link>
-						{year && (
-							<p>
-								{year} · {format ?? "Misc"}
-							</p>
-						)}
-					</div>
-					<div className={styles.albumFooter}>
-						{/* User's own rating will go here */}
-						{userRating ? (
-							<StarRating rating={userRating} />
-						) : (
-							<div className={styles.rating}>No rating yet</div>
-						)}
+							{year && (
+								<p>
+									{year} · {format ?? "Misc"}
+								</p>
+							)}
+						</div>
+						<div className={styles.albumFooter}>
+							{userRating ? (
+								<StarRating rating={userRating} />
+							) : (
+								<div className={styles.rating}>
+									No rating yet
+								</div>
+							)}
 
-						{rating ? (
-							<RatingBadge
-								rating={rating}
-								className={styles.ratingButton}
-								onClick={() => {
-									if (user) setDialogOpen(true);
-									else navigate({ to: "/login" });
-								}}
-							/>
-						) : (
-							<NoRatingBadge
-								onClick={() => {
-									if (user) setDialogOpen(true);
-									else navigate({ to: "/login" });
-								}}
-							/>
-						)}
+							{rating ? (
+								<RatingBadge
+									rating={rating}
+									className={styles.ratingButton}
+									onClick={() => {
+										if (user) setDialogOpen(true);
+										else navigate({ to: "/login" });
+									}}
+								/>
+							) : (
+								<NoRatingBadge
+									onClick={() => {
+										if (user) setDialogOpen(true);
+										else navigate({ to: "/login" });
+									}}
+								/>
+							)}
+						</div>
 					</div>
-				</div>
-			</Card>
+				</Card>
+			</Link>
 			{dialogOpen && (
 				<RatingDialog
 					albumId={albumId}

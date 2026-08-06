@@ -6,12 +6,16 @@ const NoRatingBadge = ({
 	onClick,
 }: {
 	className?: string;
-	onClick?: () => void;
+	onClick?: (e: React.MouseEvent) => void;
 }) => {
 	return (
 		<div
 			className={`${styles.ratingBadge} ${styles.noRatingBadge} ${className}`}
-			onClick={onClick}
+			onClick={(e) => {
+				e.preventDefault();
+				// e.stopPropagation();
+				onClick?.(e);
+			}}
 		>
 			<Star stroke="currentColor" />
 			<p>Rate</p>
