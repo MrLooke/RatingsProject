@@ -266,6 +266,26 @@ public partial class AppDbContext : DbContext
         modelBuilder.Entity<SongRating>(entity =>
         {
             entity.HasKey(r => new { r.UserId, r.SongId });
+
+            entity.ToTable("SongRatings");
+
+            entity.Property(e => e.UserId).HasColumnName("UserId");
+            entity.Property(e => e.SongId).HasColumnName("SongId");
+            entity.Property(e => e.AlbumId).HasColumnName("AlbumId");
+            entity.Property(e => e.Score).HasColumnName("rating");
+            entity.Property(e => e.Review).HasColumnName("Review");
+
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_SongRatings_app_user_UserId");
+
+            entity.HasOne(d => d.Song).WithMany(s => s.SongRatings)
+                .HasForeignKey(d => d.SongId)
+                .HasConstraintName("FK_SongRatings_song_SongId");
+
+            entity.HasOne(d => d.Album).WithMany()
+                .HasForeignKey(d => d.AlbumId)
+                .HasConstraintName("FK_SongRatings_album_AlbumId");
         });
 
         OnModelCreatingPartial(modelBuilder);

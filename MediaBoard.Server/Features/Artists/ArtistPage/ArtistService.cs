@@ -23,15 +23,27 @@ namespace MediaBoard.Server.Features.Artists.ArtistPage
                         .ThenByDescending(al => al.Year)
                         .Select(al => new AlbumDTO
                         (
-                            al.Id, 
-                            al.Title, 
-                            al.Year, 
-                            al.Format, 
+                            al.Id,
+                            al.Title,
+                            al.Year,
+                            al.Format,
                             al.Ratings.Any() ? al.Ratings.Average(r => r.Score) : null,
-                            userId.HasValue 
+                            userId.HasValue
                                 ? al.Ratings.Where(r => r.UserId == userId).Select(r => (short?)r.Score).FirstOrDefault()
                                 : null
                         ))
+                        .ToList(),
+                    a.Albums
+                        .SelectMany(al => al.Songs.Select(s => new TopSongDTO(
+                            s.Id,
+                            s.Title,
+                            al.Id,
+                            al.Title,
+                            s.SongRatings.Any() ? s.SongRatings.Average(r => (double?)r.Score) : null
+                        )))
+                        .OrderByDescending(s => s.AverageRating.HasValue)
+                        .ThenByDescending(s => s.AverageRating)
+                        .Take(10)
                         .ToList()
                 ))
                 .FirstOrDefaultAsync();

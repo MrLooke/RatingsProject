@@ -2,6 +2,6 @@
 {
     public interface IAlbumService
     {
-        Task<AlbumInfoResult?> GetFullAlbumDataAsync(int albumId);
+        Task<AlbumInfoResult?> GetFullAlbumDataAsync(int albumId, int? userId = null);
     }
 }

@@ -1,23 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MediaBoard.Server.Entities
+namespace MediaBoard.Server.Entities;
+
+public partial class SongRating
 {
-    public class SongRating
-    {
-        public int UserId { get; set; }
+    public int UserId { get; set; }
 
-        public int SongId { get; set; }
+    public int SongId { get; set; }
 
-        public int AlbumId { get; set; }
+    public int AlbumId { get; set; }
 
-        [Column("rating")] public short Score { get; set; }
+    [Column("rating")] public short Score { get; set; }
 
-        public string? Review { get; set; }
+    public string? Review { get; set; }
 
-        public virtual AppUser User { get; set; } = null!;
+    public virtual AppUser User { get; set; } = null!;
 
-        public virtual Song Song { get; set; } = null!;
+    public virtual Song Song { get; set; } = null!;
 
-        public virtual Album? Album { get; set; }
-    }
+    public virtual Album? Album { get; set; }
 }

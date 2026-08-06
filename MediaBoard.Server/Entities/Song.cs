@@ -18,4 +18,6 @@ public partial class Song
     public string? Duration { get; set; }
 
     public virtual Album Album { get; set; } = null!;
+
+    public virtual ICollection<SongRating> SongRatings { get; set; } = new List<SongRating>();
 }

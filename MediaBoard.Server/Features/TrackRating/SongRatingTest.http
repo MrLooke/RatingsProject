@@ -1,0 +1,30 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@host = localhost
+@port = 8080
+@baseUrl = http://{{host}}:{{port}}
+
+### Song Rating
+PUT {{baseUrl}}/songrating
+Content-Type: application/json
+{
+  "SongId": 1,
+  "Score": 8,
+  "Review": "Her best work so far."
+}
+
+### Song Rating To Check Update (Not Dupe)
+PUT {{baseUrl}}/songrating
+Content-Type: application/json
+{
+  "SongId": 1,
+  "Score": 9,
+  "Review": "Her best work so far."
+}
+
+### Song Rating For Missing Song (Expect 404)
+PUT {{baseUrl}}/songrating
+Content-Type: application/json
+{
+  "SongId": 999999999,
+  "Score": 8
+}

@@ -11,5 +11,9 @@
         public string? Position { get; set; }
 
         public string? Duration { get; set; }
+
+        public double? AverageRating { get; set; }
+
+        public short? UserRating { get; set; }
     }
 }
