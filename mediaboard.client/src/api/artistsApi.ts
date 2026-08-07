@@ -24,6 +24,14 @@ export const searchArtists = async (
 	return response.json();
 };
 
+interface TopSong {
+	id: number;
+	title: string;
+	albumId: number;
+	albumTitle: string;
+	averageRating?: number;
+}
+
 interface Album {
 	id: number;
 	title: string;
@@ -38,6 +46,7 @@ export interface ArtistPage {
 	name: string;
 	description?: string;
 	albums: Album[];
+	topSongs: TopSong[];
 }
 
 export const getArtistPage = async (artistId: number): Promise<ArtistPage> => {

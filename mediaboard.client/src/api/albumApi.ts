@@ -6,6 +6,8 @@ export interface AlbumSong {
 	trackNumber: number;
 	position?: string;
 	duration?: string;
+	averageRating?: number;
+	userRating?: number;
 }
 
 export interface AlbumArtist {

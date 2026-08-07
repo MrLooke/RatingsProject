@@ -12,7 +12,6 @@ const RatingBadge = ({ rating, className, onClick }: RatingBadgeProps) => {
 			className={`${styles.ratingBadge} ${className}`}
 			onClick={(e) => {
 				e.preventDefault();
-				// e.stopPropagation();
 				onClick?.(e);
 			}}
 		>

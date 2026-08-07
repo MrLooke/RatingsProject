@@ -260,6 +260,7 @@
 .ratingBadge:hover {
 	background-color: var(--primary-muted-hover);
 	border-color: var(--primary);
+	cursor: pointer;
 }
 
 .noRatingBadge {

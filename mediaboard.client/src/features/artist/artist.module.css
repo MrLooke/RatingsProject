@@ -241,6 +241,8 @@
 	margin: 0;
 	position: relative;
 	height: 65px;
+	width: 100%;
+	overflow: hidden;
 
 	* {
 		position: absolute;
@@ -261,6 +263,11 @@
 	h4 {
 		top: 18px;
 		font-size: 0.85rem;
+		width: 100%;
+
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 
 	.songRating {

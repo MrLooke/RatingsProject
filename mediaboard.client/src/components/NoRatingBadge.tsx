@@ -13,7 +13,6 @@ const NoRatingBadge = ({
 			className={`${styles.ratingBadge} ${styles.noRatingBadge} ${className}`}
 			onClick={(e) => {
 				e.preventDefault();
-				// e.stopPropagation();
 				onClick?.(e);
 			}}
 		>

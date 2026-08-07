@@ -113,11 +113,27 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 
 				<ListCard className={styles.songList}>
 					<ListHeader alignment="center">Popular Songs</ListHeader>
-					{mockPopularSongs
-						.sort((a, b) => b.rating - a.rating)
+					{data.topSongs
+						.sort((a, b) => {
+							if (
+								a.averageRating == undefined &&
+								b.averageRating == undefined
+							)
+								return a.albumTitle.localeCompare(b.albumTitle);
+							if (a.averageRating == undefined) return -1;
+							if (b.averageRating == undefined) return 1;
+
+							return b.averageRating - a.averageRating;
+						})
 						.map((song) => (
 							<ListItem>
-								<SongListItem key={song.id} {...song} />
+								<SongListItem
+									key={song.id}
+									id={song.id}
+									title={song.title}
+									album={song.albumTitle}
+									rating={song.averageRating}
+								/>
 							</ListItem>
 						))}
 				</ListCard>
