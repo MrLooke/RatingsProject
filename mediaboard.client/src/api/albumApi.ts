@@ -1,3 +1,5 @@
+import { apiFetch } from "@/api/client";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export interface AlbumSong {
@@ -26,9 +28,7 @@ export interface AlbumPageDTO {
 }
 
 export const getAlbumPage = async (albumId: number): Promise<AlbumPageDTO> => {
-	const response = await fetch(`${apiUrl}/album/${albumId}`, {
-		credentials: "include",
-	});
+	const response = await apiFetch(`${apiUrl}/album/${albumId}`);
 
 	if (!response.ok) {
 		throw new Error("Error getting album information.");

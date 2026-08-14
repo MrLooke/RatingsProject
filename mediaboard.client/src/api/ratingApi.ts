@@ -1,3 +1,5 @@
+import { apiFetch } from "@/api/client";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export const submitRating = async (
@@ -5,10 +7,9 @@ export const submitRating = async (
 	score: number,
 	review?: string,
 ): Promise<void> => {
-	const response = await fetch(`${apiUrl}/rating`, {
+	const response = await apiFetch(`${apiUrl}/rating`, {
 		method: "PUT",
 		headers: { "Content-Type": "application/json" },
-		credentials: "include",
 		body: JSON.stringify({ albumId, score, review }),
 	});
 

@@ -1,3 +1,5 @@
+import { apiFetch } from "@/api/client";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export interface AuthResult {
@@ -51,16 +53,13 @@ export const loginUser = async (request: LoginRequest): Promise<AuthResult> => {
 };
 
 export const logoutUser = async () => {
-	await fetch(`${apiUrl}/auth/logout`, {
+	await apiFetch(`${apiUrl}/auth/logout`, {
 		method: "POST",
-		credentials: "include",
 	});
 };
 
 export const checkUser = async (): Promise<AuthResult> => {
-	const response = await fetch(`${apiUrl}/auth/me`, {
-		credentials: "include",
-	});
+	const response = await apiFetch(`${apiUrl}/auth/me`);
 
 	const data = await response.json();
 	if (!response.ok) {

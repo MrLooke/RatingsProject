@@ -1,3 +1,5 @@
+import { apiFetch } from "@/api/client";
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export interface ArtistSearchDTO {
@@ -50,9 +52,7 @@ export interface ArtistPage {
 }
 
 export const getArtistPage = async (artistId: number): Promise<ArtistPage> => {
-	const response = await fetch(`${apiUrl}/artist/${artistId}`, {
-		credentials: "include",
-	});
+	const response = await apiFetch(`${apiUrl}/artist/${artistId}`);
 
 	if (!response.ok) {
 		throw new Error("Error getting artist's information.");
