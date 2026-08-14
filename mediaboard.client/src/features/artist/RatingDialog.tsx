@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Star from "@/assets/star.svg?react";
 import StarFull from "@/assets/star-full.svg?react";
-import { submitRating } from "@/api/ratingApi";
 import Button from "@/components/Button";
 import styles from "./RatingDialog.module.css";
 
@@ -54,14 +53,14 @@ const StarPicker = ({
 
 const RatingDialog = ({
 	albumTitle,
-	albumId,
 	initialRating = null,
 	onClose,
+	onSubmit,
 }: {
 	albumTitle: string;
-	albumId: number;
 	initialRating?: number | null;
 	onClose: () => void;
+	onSubmit: (score: number, review?: string) => Promise<void>;
 }) => {
 	const [stars, setStars] = useState(initialRating ? initialRating / 2 : 0);
 	const [review, setReview] = useState("");
@@ -77,8 +76,7 @@ const RatingDialog = ({
 		setError(null);
 		setLoading(true);
 		try {
-			const score = stars * 2;
-			await submitRating(albumId, score, review.trim() || undefined);
+			await onSubmit(stars * 2, review.trim() || undefined);
 			onClose();
 		} catch (err) {
 			setError(

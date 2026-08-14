@@ -94,6 +94,7 @@ const ArtistPage = ({ artistId }: { artistId: number }) => {
 						.map((album) => (
 							<FullAlbumCard
 								key={album.id}
+								artistId={artistId}
 								albumId={album.id}
 								title={album.title}
 								rating={album.averageRating}

@@ -9,8 +9,10 @@ import RatingDialog from "./RatingDialog";
 import RatingBadge from "@/components/RatingBadge";
 import NoRatingBadge from "@/components/NoRatingBadge";
 import StarRating from "@/components/StarRating";
+import useRateAlbum from "@/hooks/api/useRateAlbum";
 
 const FullAlbumCard = ({
+	artistId,
 	albumId,
 	title,
 	year,
@@ -19,6 +21,7 @@ const FullAlbumCard = ({
 	rating,
 	userRating,
 }: {
+	artistId: number;
 	albumId: number;
 	title: string;
 	year: string | undefined;
@@ -30,8 +33,12 @@ const FullAlbumCard = ({
 	const { user } = useAuth();
 	const navigate = useNavigate();
 	const [dialogOpen, setDialogOpen] = useState(false);
+	const rateAlbum = useRateAlbum(artistId);
 
 	const albumLink = `/album/${albumId}`;
+
+	const handleRatingSubmit = (score: number, review?: string) =>
+		rateAlbum.mutateAsync({ albumId, score, review });
 
 	return (
 		<>
@@ -88,10 +95,10 @@ const FullAlbumCard = ({
 			</Link>
 			{dialogOpen && (
 				<RatingDialog
-					albumId={albumId}
 					albumTitle={title}
 					initialRating={userRating}
 					onClose={() => setDialogOpen(false)}
+					onSubmit={handleRatingSubmit}
 				/>
 			)}
 		</>
