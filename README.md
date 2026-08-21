@@ -160,7 +160,7 @@ The frontend, API, and PostgreSQL database will all be running as separate conta
 
 1. ~Parse Discogs releases dump → backfill `format` column on masters table~
 2. ~Album ratings frontend~
-3. Track import from releases dump; establish album → track relationship
+3. ~Track import from releases dump; establish album → track relationship~
 4. Song ratings with auto-aggregate to album score + manual override
 5. Full album rating flow (per-song ratings → aggregated score)
 6. Expand search to albums and songs
